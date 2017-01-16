@@ -51,7 +51,6 @@ class Verifier {
 }
 
 
-
 class ReturnValueMatcher {
 
     constructor(private argsToMatch: any[], public returnValue: any) {

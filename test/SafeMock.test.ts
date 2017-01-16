@@ -10,11 +10,11 @@ interface SomeService {
 }
 
 class Complex {
-    constructor(private arg: {a: string, b: number}){
+    //noinspection JSUnusedLocalSymbols
+    constructor(private arg: {a: string, b: number}) {
 
     }
 }
-
 
 describe('Result', () => {
     describe("setting return values", () => {
@@ -75,61 +75,77 @@ describe('Result', () => {
         it("watches on Complex args correctly if objects match", function () {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
-            when(mock.matchesComplexArgs(new Complex({a: "hello", b: 123}))).return("Expected only for matching object");
+            when(mock.matchesComplexArgs(new Complex({
+                a: "hello",
+                b: 123
+            }))).return("Expected only for matching object");
 
-            expect(mock.matchesComplexArgs(new Complex({a: "nope", b: 123}))).not.to.equal("Expected only for matching object");
-            expect(mock.matchesComplexArgs(new Complex({a: "hello", b: -1}))).not.to.equal("Expected only for matching object");
+            expect(mock.matchesComplexArgs(new Complex({
+                a: "nope",
+                b: 123
+            }))).not.to.equal("Expected only for matching object");
+            expect(mock.matchesComplexArgs(new Complex({
+                a: "hello",
+                b: -1
+            }))).not.to.equal("Expected only for matching object");
 
-            expect(mock.matchesComplexArgs(new Complex({a: "hello", b: 123}))).to.equal("Expected only for matching object");
+            expect(mock.matchesComplexArgs(new Complex({
+                a: "hello",
+                b: 123
+            }))).to.equal("Expected only for matching object");
         });
 
     });
 
     describe('verifying calls', () => {
-        it("throws an exception if Not Called", () => {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+        describe('no argument methods', () => {
+            it("throws an exception if Not Called", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
-            expect(() => {
+                expect(() => {
+                    verify(mock.createSomethingNoArgs).called()
+                }).to.throw("createSomethingNoArgs was not called");
+            });
+
+            it("does not throw an exception if it was Called", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                mock.createSomethingNoArgs();
+
                 verify(mock.createSomethingNoArgs).called()
-            }).to.throw("createSomethingNoArgs was not called");
+            });
         });
 
-        it("does not throw an exception if it was Called", () => {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+        describe('1 argument methods', () => {
+            it("throws an exception if called with different arguments", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
-            mock.createSomethingNoArgs();
+                mock.createSomethingOneArg("Actual Call");
 
-            verify(mock.createSomethingNoArgs).called()
+                expect(() => {
+                    verify(mock.createSomethingOneArg).calledWith("ExpectedCall");
+                }).to.throw("createSomethingOneArg was not called with: [ExpectedCall]");
+            });
+
+            it("throws an exception with previous interactions", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                mock.createSomethingOneArg("First Call");
+                mock.createSomethingOneArg("Second Call");
+
+                expect(() => {
+                    verify(mock.createSomethingOneArg).calledWith("ExpectedCall");
+                }).to.throw("createSomethingOneArg was not called with: [ExpectedCall]\n" +
+                    "       Other interactions with this mock: [First Call, Second Call]");
+            });
+
+            it("does not throw exception if calls match", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                mock.createSomethingOneArg("ExpectedArg!");
+
+                verify(mock.createSomethingOneArg).calledWith("ExpectedArg!");
+            });
         });
-
-        it("throws an exception if called with different arguments", () => {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
-
-            mock.createSomethingOneArg("Actual Call");
-
-            expect(() => {
-                verify(mock.createSomethingOneArg).calledWith("ExpectedCall");
-            }).to.throw("createSomethingOneArg was not called with: [ExpectedCall]");
-        });
-
-        it("throws an exception with previous interactions", () => {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
-
-            mock.createSomethingOneArg("First Call");
-            mock.createSomethingOneArg("Second Call");
-
-            expect(() => {
-                verify(mock.createSomethingOneArg).calledWith("ExpectedCall");
-            }).to.throw("createSomethingOneArg was not called with: [ExpectedCall]\n" +
-                "       Other interactions with this mock: [First Call, Second Call]");
-        });
-
-        it("does not throw exception if calls match", () => {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
-
-            mock.createSomethingOneArg("ExpectedArg!");
-
-            verify(mock.createSomethingOneArg).calledWith("ExpectedArg!");
-        });
-    })
+    });
 });
