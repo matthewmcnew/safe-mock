@@ -3,6 +3,7 @@ import {ReturnSetter} from "./SafeMock";
 const _setReturnValue = Symbol('_setReturnValue');
 
 export function whenInTests<T>(returnFromMock: T): ReturnSetter<T> {
+    //noinspection ReservedWordAsName
     return {
         return(returnValue: T): void {
             (returnFromMock as any)[_setReturnValue](returnValue);
@@ -10,13 +11,10 @@ export function whenInTests<T>(returnFromMock: T): ReturnSetter<T> {
     };
 }
 
-class ValueIfNoReturnValueSet {
-    constructor(private propertyName: any, futureValueSetter: (returnValue: any) => void) {
+class ValueIfNoReturnValueSet extends Error {
+    constructor(propertyName: any, futureValueSetter: (returnValue: any) => void) {
+        super(`MockReturn [${propertyName}] has No return value Set`);
         (this as any)[_setReturnValue] = futureValueSetter;
-    }
-
-    toString() {
-        return `[MockReturn [${this.propertyName} has No return value Set]]`
     }
 }
 
@@ -35,34 +33,48 @@ interface ReturnValueMatcherMap {
     [key: string]: ReturnValueMatcher[];
 }
 
+class ReturnValueMatcherRepo {
+    private map: ReturnValueMatcherMap = {};
+
+    recordAndFindMatch(p: PropertyKey, argsToMatch: any[]): any | undefined {
+        const returnValueMatchers = this.map[p] || [];
+
+        const [firstMatchedMatcher] =
+            returnValueMatchers
+                .filter((matcher: ReturnValueMatcher) => matcher.match(argsToMatch));
+
+        if (firstMatchedMatcher) {
+            return firstMatchedMatcher.returnValue;
+        } else {
+            return undefined;
+        }
+    }
+
+    setReturnValue(propertyKey: PropertyKey, returnValue: any, argsToMatch: any[]) {
+        if (!this.map[propertyKey])
+            this.map[propertyKey] = [];
+
+        this.map[propertyKey].push(new ReturnValueMatcher(argsToMatch, returnValue));
+    }
+}
+
 export class ProxyMock<T> implements ProxyHandler<T> {
 
-    _returnValueMatchersMap: ReturnValueMatcherMap = {};
+    private returnValueMatcherRepo: ReturnValueMatcherRepo = new ReturnValueMatcherRepo();
 
     constructor() {
     }
 
-    get?(target: T, p: PropertyKey, receiver: any): any {
+    get?(target: T, propertyKey: PropertyKey, receiver: any): any {
         return (...argsToMatch: any[]) => {
-            const setReturnValue = (returnValue: any) => {
-                if (!this._returnValueMatchersMap[p])
-                    this._returnValueMatchersMap[p] = [];
+            const matchingReturnValue = this.returnValueMatcherRepo.recordAndFindMatch(propertyKey, argsToMatch);
 
-                this._returnValueMatchersMap[p].push(new ReturnValueMatcher(argsToMatch, returnValue));
-            };
+            if (matchingReturnValue)
+                return matchingReturnValue;
 
-            const returnValueMatchers = this._returnValueMatchersMap[p];
-
-            if (returnValueMatchers) {
-                const [firstMatchedMatcher] =
-                    returnValueMatchers
-                        .filter((matcher: ReturnValueMatcher) => matcher.match(argsToMatch));
-
-                if (firstMatchedMatcher)
-                    return firstMatchedMatcher.returnValue;
-            }
-
-            return new ValueIfNoReturnValueSet(p, setReturnValue);
+            return new ValueIfNoReturnValueSet(propertyKey, (returnValue: any) => {
+                this.returnValueMatcherRepo.setReturnValue(propertyKey, returnValue, argsToMatch);
+            });
         };
     }
 }

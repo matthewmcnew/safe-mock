@@ -54,7 +54,7 @@ describe('Result', () => {
         it("returns Object That nicely says it has not been mocked yet", function () {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
-            expect(mock.createSomethingNoArgs().toString()).to.equal("[MockReturn [createSomethingNoArgs has No return value Set]]")
+            expect(mock.createSomethingNoArgs().toString()).to.equal("Error: MockReturn [createSomethingNoArgs] has No return value Set")
         });
 
         it("does not return set return value if argument's dont match", function () {
