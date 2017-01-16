@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import SafeMock from "../src/SafeMock";
-import {Mock, when} from "../src/SafeMock";
+import {Mock, when, verify} from "../src/SafeMock";
 
 interface SomeService {
     createSomethingNoArgs(): string;
@@ -65,4 +65,22 @@ describe('Result', () => {
             expect(mock.createSomethingOneArg("Not Matching ARgs")).not.to.equal("Some Return Value");
         });
     });
+
+    describe('verifying calls', () => {
+        it("throws an exception if Not Called with specified args", function () {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            expect(() => {
+                verify(mock.createSomethingNoArgs).called()
+            }).to.throw("createSomethingNoArgs was not called");
+        });
+
+        it("does not throw an exception if it was Called", function () {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            mock.createSomethingNoArgs();
+
+            verify(mock.createSomethingNoArgs).called()
+        });
+    })
 });

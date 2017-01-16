@@ -1,4 +1,4 @@
-import {ReturnSetter} from "./SafeMock";
+import {ReturnSetter, verifier} from "./SafeMock";
 
 const _setReturnValue = Symbol('_setReturnValue');
 
@@ -11,12 +11,33 @@ export function whenInTests<T>(returnFromMock: T): ReturnSetter<T> {
     };
 }
 
+
+export const verifyInTests: verifier = (mockToVerify: any): any => {
+    return mockToVerify.verifier;
+};
+
 class ValueIfNoReturnValueSet extends Error {
     constructor(propertyName: any, futureValueSetter: (returnValue: any) => void) {
         super(`MockReturn [${propertyName}] has No return value Set`);
         (this as any)[_setReturnValue] = futureValueSetter;
     }
 }
+
+class Verifier {
+    constructor(private repo: ReturnValueMatcherRepo, private propertyKey: PropertyKey) {
+
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    called() {
+        const [callIfExisits] = this.repo.lookupCalls(this.propertyKey)
+            .filter(call => call.length == 0);
+
+        if(callIfExisits === undefined)
+            throw new Error(`${this.propertyKey} was not called`)
+    }
+}
+
 
 class ReturnValueMatcher {
 
@@ -33,10 +54,17 @@ interface ReturnValueMatcherMap {
     [key: string]: ReturnValueMatcher[];
 }
 
+interface CallMap {
+    [key: string]: any[][];
+}
+
+
 class ReturnValueMatcherRepo {
     private map: ReturnValueMatcherMap = {};
+    private callMap: CallMap = {};
 
     recordAndFindMatch(p: PropertyKey, argsToMatch: any[]): any | undefined {
+        this.recordCall(p, argsToMatch);
         const returnValueMatchers = this.map[p] || [];
 
         const [firstMatchedMatcher] =
@@ -56,6 +84,16 @@ class ReturnValueMatcherRepo {
 
         this.map[propertyKey].push(new ReturnValueMatcher(argsToMatch, returnValue));
     }
+
+    lookupCalls(propertyKey: PropertyKey): any[][] {
+        return this.callMap[propertyKey] || [];
+    }
+
+    private recordCall(propertyKey: PropertyKey, argsToMatch: any[]) {
+        this.callMap[propertyKey] = (this.callMap[propertyKey] || []);
+
+        this.callMap[propertyKey].push(argsToMatch)
+    }
 }
 
 export class ProxyMock<T> implements ProxyHandler<T> {
@@ -66,7 +104,8 @@ export class ProxyMock<T> implements ProxyHandler<T> {
     }
 
     get?(target: T, propertyKey: PropertyKey, receiver: any): any {
-        return (...argsToMatch: any[]) => {
+
+        const mockedFunc = (...argsToMatch: any[]) => {
             const matchingReturnValue = this.returnValueMatcherRepo.recordAndFindMatch(propertyKey, argsToMatch);
 
             if (matchingReturnValue)
@@ -76,5 +115,9 @@ export class ProxyMock<T> implements ProxyHandler<T> {
                 this.returnValueMatcherRepo.setReturnValue(propertyKey, returnValue, argsToMatch);
             });
         };
+
+        (mockedFunc as any).verifier = new Verifier(this.returnValueMatcherRepo, propertyKey);
+
+        return mockedFunc;
     }
 }
