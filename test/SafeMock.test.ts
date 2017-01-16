@@ -11,7 +11,7 @@ interface SomeService {
 
 describe('Result', () => {
     describe("setting return values", () => {
-        it("allows setting return args for no arg mockedMethods", function () {
+        it("allows setting return args for no arg mockedMethods", () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             when(mock.createSomethingNoArgs()).return("Expected Return");
@@ -19,7 +19,7 @@ describe('Result', () => {
             expect(mock.createSomethingNoArgs()).to.equal("Expected Return");
         });
 
-        it("allows setting return args for 1 arg mockedMethods", function () {
+        it("allows setting return args for 1 arg mockedMethods", () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             when(mock.createSomethingOneArg("ArgToTriggerReturn")).return("Some Return Value");
@@ -27,7 +27,7 @@ describe('Result', () => {
             expect(mock.createSomethingOneArg("ArgToTriggerReturn")).to.equal("Some Return Value");
         });
 
-        it("allows setting multiple returnValues for mockedMethods", function () {
+        it("allows setting multiple returnValues for mockedMethods", () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             when(mock.createSomethingOneArg("1")).return("one");
@@ -41,7 +41,7 @@ describe('Result', () => {
             expect(mock.createSomethingOneArg("1")).to.equal("one");
         });
 
-        it("allows setting return args for 1+ arg mockedMethods", function () {
+        it("allows setting return args for 1+ arg mockedMethods", () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             when(mock.createSomethingMultipleArgs("arg1", "arg2", "arg3")).return(123);
@@ -51,13 +51,13 @@ describe('Result', () => {
             expect(mock.createSomethingMultipleArgs("arg7", "arg8", "arg9")).to.equal(789);
         });
 
-        it("returns Object That nicely says it has not been mocked yet", function () {
+        it("returns Object That nicely says it has not been mocked yet", () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             expect(mock.createSomethingNoArgs().toString()).to.equal("Error: MockReturn [createSomethingNoArgs] has No return value Set")
         });
 
-        it("does not return set return value if argument's dont match", function () {
+        it("does not return set return value if argument's dont match", () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             when(mock.createSomethingOneArg("ArgToTriggerReturn")).return("Some Return Value");
@@ -67,7 +67,7 @@ describe('Result', () => {
     });
 
     describe('verifying calls', () => {
-        it("throws an exception if Not Called with specified args", function () {
+        it("throws an exception if Not Called with specified args", () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             expect(() => {
@@ -75,7 +75,7 @@ describe('Result', () => {
             }).to.throw("createSomethingNoArgs was not called");
         });
 
-        it("does not throw an exception if it was Called", function () {
+        it("does not throw an exception if it was Called", () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             mock.createSomethingNoArgs();
