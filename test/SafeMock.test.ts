@@ -6,6 +6,13 @@ interface SomeService {
     createSomethingNoArgs(): string;
     createSomethingOneArg(one: string): string;
     createSomethingMultipleArgs(one: string, two: string, three: string): number;
+    matchesComplexArgs(thing: Complex): string;
+}
+
+class Complex {
+    constructor(private arg: {a: string, b: number}){
+
+    }
 }
 
 
@@ -64,6 +71,18 @@ describe('Result', () => {
 
             expect(mock.createSomethingOneArg("Not Matching ARgs")).not.to.equal("Some Return Value");
         });
+
+        it("watches on Complex args correctly if objects match", function () {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            when(mock.matchesComplexArgs(new Complex({a: "hello", b: 123}))).return("Expected only for matching object");
+
+            expect(mock.matchesComplexArgs(new Complex({a: "nope", b: 123}))).not.to.equal("Expected only for matching object");
+            expect(mock.matchesComplexArgs(new Complex({a: "hello", b: -1}))).not.to.equal("Expected only for matching object");
+
+            expect(mock.matchesComplexArgs(new Complex({a: "hello", b: 123}))).to.equal("Expected only for matching object");
+        });
+
     });
 
     describe('verifying calls', () => {
