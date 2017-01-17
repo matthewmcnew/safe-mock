@@ -1,4 +1,5 @@
 import {ReturnSetter, verifier} from "./SafeMock";
+import CallsDontMatchError from "./CallsDontMatchError";
 
 const _setReturnValue = Symbol('_setReturnValue');
 
@@ -25,18 +26,30 @@ class ValueIfNoReturnValueSet extends Error {
 
 class Verifier {
     constructor(private repo: ReturnValueMatcherRepo, private propertyKey: PropertyKey) {
-
     }
 
     //noinspection JSUnusedGlobalSymbols
     called() {
-        const [callIfExisits] = this.repo.lookupCalls(this.propertyKey)
-            .filter(call => call.length == 0);
+        const calls = this.repo.lookupCalls(this.propertyKey);
 
-        if(callIfExisits === undefined)
+        const [callIfExisits] = calls.filter(call => call.length == 0);
+
+        if (callIfExisits === undefined)
             throw new Error(`${this.propertyKey} was not called`)
     }
+
+    calledWith(expectedArg: any) {
+        const calls = this.repo.lookupCalls(this.propertyKey);
+
+        const [callIfExists] = calls
+            .filter(expectedCall => JSON.stringify(expectedCall) === JSON.stringify([expectedArg]));
+
+        if (callIfExists == undefined) {
+            throw new CallsDontMatchError(expectedArg, calls, this.propertyKey);
+        }
+    }
 }
+
 
 
 class ReturnValueMatcher {

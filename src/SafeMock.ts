@@ -1,11 +1,5 @@
 import {ProxyMock, whenInTests, verifyInTests} from "./ProxyMock";
 
-export interface Mocked {
-    mocked: true;
-}
-
-export type MockedThing<T> = T & Mocked;
-
 
 export interface ReturnSetter<T> {
     //noinspection ReservedWordAsName
@@ -34,6 +28,11 @@ interface CallVerifier1<K, L> {
     calledWith(k: K, l: L): void
 }
 
+export type MockedThing<T> = T & Mocked;
+
+export interface Mocked {
+    mocked: true;
+}
 
 export type Mock<T> = {
     [P in keyof T]: MockedThing<T[P]>
@@ -46,6 +45,5 @@ export default class SafeMock {
         return new Proxy((mock as any), (proxyMock as any));
     }
 }
-
 
 export {whenInTests as when, verifyInTests as verify};

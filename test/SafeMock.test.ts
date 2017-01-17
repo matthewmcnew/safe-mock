@@ -67,7 +67,7 @@ describe('Result', () => {
     });
 
     describe('verifying calls', () => {
-        it("throws an exception if Not Called with specified args", () => {
+        it("throws an exception if Not Called", () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             expect(() => {
@@ -81,6 +81,36 @@ describe('Result', () => {
             mock.createSomethingNoArgs();
 
             verify(mock.createSomethingNoArgs).called()
+        });
+
+        it("throws an exception if called with different arguments", () => {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            mock.createSomethingOneArg("Actual Call");
+
+            expect(() => {
+                verify(mock.createSomethingOneArg).calledWith("ExpectedCall");
+            }).to.throw("createSomethingOneArg was not called with: [ExpectedCall]");
+        });
+
+        it("throws an exception with previous interactions", () => {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            mock.createSomethingOneArg("First Call");
+            mock.createSomethingOneArg("Second Call");
+
+            expect(() => {
+                verify(mock.createSomethingOneArg).calledWith("ExpectedCall");
+            }).to.throw("createSomethingOneArg was not called with: [ExpectedCall]\n" +
+                "       Other interactions with this mock: [First Call, Second Call]");
+        });
+
+        it("does not throw exception if calls match", () => {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            mock.createSomethingOneArg("ExpectedArg!");
+
+            verify(mock.createSomethingOneArg).calledWith("ExpectedArg!");
         });
     })
 });
