@@ -16,7 +16,7 @@ class Complex {
     }
 }
 
-describe('Result', () => {
+describe('SafeMock', () => {
     describe("setting return values", () => {
         it("allows setting return args for no arg mockedMethods", () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
