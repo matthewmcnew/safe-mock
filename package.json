@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test && npm run build",
+    "test": "mocha test--require ts-node/register test/**/*.ts && npm run build",
     "build": "tsc"
   },
   "author": "",
