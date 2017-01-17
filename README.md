@@ -36,7 +36,8 @@ mock.createSomething(456)
 verify(mock.createSomething).calledWith(123); // Error! createSomething never called with 123 only [456]
 ```
 
-##### Rely On Typescript to Prevent you from using Mocks incorrectly 
+##### Rely On the Typescript Compiler to prevent mistakes. 
+##### Rely On the Typescript Compiler to prevent mistakes. 
 
 ```typescript
 interface SomeService {
