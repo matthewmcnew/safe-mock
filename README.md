@@ -1,6 +1,4 @@
-Safe Mock
-
-[![Build Status](https://travis-ci.org/matthewmcnew/safe-mock.svg?branch=master)](https://travis-ci.org/matthewmcnew/safe-mock)
+Safe Mock [![Build Status](https://travis-ci.org/matthewmcnew/safe-mock.svg?branch=master)](https://travis-ci.org/matthewmcnew/safe-mock)
 ===================
 
 Mock Library for typescript that allows mocks to be created from typescript interfaces and utilized in a typesafe dsl.
