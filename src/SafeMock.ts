@@ -1,4 +1,4 @@
-import {ProxyMock, verifyInTests} from "./ProxyMock";
+import {ProxyMock, verifyInTests} from "./Proxy";
 import {whenInTests} from "./valueIfNoReturnValueSet";
 
 export interface ReturnSetter<T> {

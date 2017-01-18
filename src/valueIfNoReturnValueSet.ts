@@ -1,4 +1,5 @@
 import {ReturnSetter} from './SafeMock';
+import WhyReturnValueDidntMatch from './WhyNoReturnValueMatched';
 
 const _setReturnValue = Symbol('_setReturnValue');
 
@@ -11,10 +12,10 @@ export function whenInTests<T>(returnFromMock: T): ReturnSetter<T> {
     };
 }
 
-export function valueIfNoReturnValueSet(propertyName: any, futureReturnValueSetter: (returnValue: any) => void) {
+export function valueIfNoReturnValueSet(whyNoMatch: WhyReturnValueDidntMatch, futureReturnValueSetter: (returnValue: any) => void) {
 
     const notMockedYetExceptionThrower = function hasNotBeenMockedYet() {
-        throw new Error(`${propertyName} has not been mocked yet. Set a mock return value for it.`);
+        throw new Error(whyNoMatch.reasonAndAdvice());
     };
 
     class ValueIfNoReturnValueSet implements ProxyHandler<{}> {
@@ -25,7 +26,7 @@ export function valueIfNoReturnValueSet(propertyName: any, futureReturnValueSett
 
             if (propertyKey === "toString") {
                 return () => {
-                    return `MockReturn [${propertyName}] has No return value Set. Set a mock return value for it.`
+                    return whyNoMatch.reasonAndAdvice()
                 };
             }
 

@@ -1,6 +1,9 @@
 import {verifier} from './SafeMock';
 import CallsDontMatchError from './CallsDontMatchError';
 import {valueIfNoReturnValueSet} from './valueIfNoReturnValueSet';
+import WhyNoReturnValueMatched from './WhyNoReturnValueMatched';
+import ReturnValueMatcher from './ReturnValueMatcher';
+import LookupResult from './LookupResult';
 
 export const verifyInTests: verifier = (mockToVerify: any): any => {
     return mockToVerify.verifier;
@@ -34,17 +37,6 @@ class Verifier {
     }
 }
 
-class ReturnValueMatcher {
-
-    constructor(private argsToMatch: any[], public returnValue: any) {
-    }
-
-    match(possibleArgsToMatch: any[]) {
-        return JSON.stringify(possibleArgsToMatch) === JSON.stringify(this.argsToMatch);
-    }
-
-}
-
 interface ReturnValueMatcherMap {
     [key: string]: ReturnValueMatcher[];
 }
@@ -55,29 +47,31 @@ interface CallMap {
 
 
 class ReturnValueMatcherRepo {
-    private map: ReturnValueMatcherMap = {};
+    private returnValueMatcherMap: ReturnValueMatcherMap = {};
     private callMap: CallMap = {};
 
-    recordAndFindMatch(p: PropertyKey, argsToMatch: any[]): any | undefined {
-        this.recordCall(p, argsToMatch);
-        const returnValueMatchers = this.map[p] || [];
+    recordAndFindMatch(propertyKey: PropertyKey, argsToMatch: any[]): LookupResult {
+        this.recordCall(propertyKey, argsToMatch);
+        const returnValueMatchers = this.returnValueMatcherMap[propertyKey] || [];
 
         const [firstMatchedMatcher] =
             returnValueMatchers
                 .filter((matcher: ReturnValueMatcher) => matcher.match(argsToMatch));
 
         if (firstMatchedMatcher) {
-            return firstMatchedMatcher.returnValue;
+            return LookupResult.returnValueFound(firstMatchedMatcher.returnValue);
         } else {
-            return undefined;
+            return LookupResult.noReturnValueMatched(
+                new WhyNoReturnValueMatched(argsToMatch, returnValueMatchers, propertyKey)
+            );
         }
     }
 
     setReturnValue(propertyKey: PropertyKey, returnValue: any, argsToMatch: any[]) {
-        if (!this.map[propertyKey])
-            this.map[propertyKey] = [];
+        if (!this.returnValueMatcherMap[propertyKey])
+            this.returnValueMatcherMap[propertyKey] = [];
 
-        this.map[propertyKey].push(new ReturnValueMatcher(argsToMatch, returnValue));
+        this.returnValueMatcherMap[propertyKey].push(new ReturnValueMatcher(argsToMatch, returnValue));
     }
 
     lookupCalls(propertyKey: PropertyKey): any[][] {
@@ -101,16 +95,15 @@ export class ProxyMock<T> implements ProxyHandler<T> {
     get?(target: T, propertyKey: PropertyKey, receiver: any): any {
 
         const mockedFunc = (...argsToMatch: any[]) => {
-            const matchingReturnValue = this.returnValueMatcherRepo.recordAndFindMatch(propertyKey, argsToMatch);
+            const lookUpResult = this.returnValueMatcherRepo.recordAndFindMatch(propertyKey, argsToMatch);
 
-            if (matchingReturnValue)
-                return matchingReturnValue;
+            if (lookUpResult.returnFound)
+                return lookUpResult.returnValue;
 
             return valueIfNoReturnValueSet(
-                propertyKey,
+                lookUpResult.whyNoReturnValueMatched,
                 (returnValue: any) => this.returnValueMatcherRepo.setReturnValue(propertyKey, returnValue, argsToMatch)
             );
-
         };
 
         (mockedFunc as any).verifier = new Verifier(this.returnValueMatcherRepo, propertyKey);

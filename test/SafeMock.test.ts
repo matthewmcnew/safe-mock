@@ -95,12 +95,6 @@ describe('SafeMock', () => {
 
         describe("No Return Value Set", () => {
 
-            it("returns Object from mock that nicely says it has not been mocked yet", () => {
-                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
-
-                expect(mock.createSomethingNoArgs().toString()).to.equal("MockReturn [createSomethingNoArgs] has No return value Set. Set a mock return value for it.")
-            });
-
             it("returns object from mock that throws exception if anyone tries to get a field or a method on it", () => {
                 interface SomeObjectThatMockReturns {
                     thisSHouldBlowUpFromMock(): void
@@ -121,6 +115,25 @@ describe('SafeMock', () => {
                     //noinspection JSUnusedLocalSymbols
                     const dontMindMedontMindMe = mock.returnTheObject().field;
                 }).to.throw(`returnTheObject has not been mocked yet. Set a mock return value for it.`);
+            });
+
+
+            it("returns object from mock that throws exception with stubbed argument methods for helpful debugging", () => {
+                interface SomeObjectThatMockReturns {
+                    field: string
+                }
+
+                interface ObjectToMock {
+                    returnTheObject(someArg: {a: string}): SomeObjectThatMockReturns
+                }
+
+                const mock: Mock<ObjectToMock> = SafeMock.build<ObjectToMock>();
+
+                when(mock.returnTheObject({a: 'when'})).return({field: "hello"});
+
+                expect(() => {
+                    const dontMindMe = mock.returnTheObject({a: 'not Matching'}).field;
+                }).to.throw(`returnTheObject was stubbed to return a value when called with [{"a":"when"}] but was called with: [{"a":"not Matching"}`);
             });
 
             it("returns object from mock that throws exception if anyone tries to set a field on it", () => {
