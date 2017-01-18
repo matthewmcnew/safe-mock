@@ -101,9 +101,10 @@ describe('SafeMock', () => {
                 expect(mock.createSomethingNoArgs().toString()).to.equal("MockReturn [createSomethingNoArgs] has No return value Set. Set a mock return value for it.")
             });
 
-            it("returns object from mock that throws exception if anyone calls a method on it", () => {
+            it("returns object from mock that throws exception if anyone tries to get a field or a method on it", () => {
                 interface SomeObjectThatMockReturns {
                     thisSHouldBlowUpFromMock(): void
+                    field: string
                 }
 
                 interface ObjectToMock {
@@ -114,6 +115,11 @@ describe('SafeMock', () => {
 
                 expect(() => {
                     mock.returnTheObject().thisSHouldBlowUpFromMock();
+                }).to.throw(`returnTheObject has not been mocked yet. Set a mock return value for it.`);
+
+                expect(() => {
+                    //noinspection JSUnusedLocalSymbols
+                    const dontMindMedontMindMe = mock.returnTheObject().field;
                 }).to.throw(`returnTheObject has not been mocked yet. Set a mock return value for it.`);
             });
 

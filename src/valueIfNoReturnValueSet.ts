@@ -19,7 +19,7 @@ export function valueIfNoReturnValueSet(propertyName: any, futureReturnValueSett
                 };
             }
 
-            return notMockedYetExceptionThrower;
+            return notMockedYetExceptionThrower();
         }
 
         set?(target: {}, p: PropertyKey, value: any, receiver: any): boolean {
