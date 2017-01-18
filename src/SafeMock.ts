@@ -1,5 +1,5 @@
-import {ProxyMock, whenInTests, verifyInTests} from "./ProxyMock";
-
+import {ProxyMock, verifyInTests} from "./ProxyMock";
+import {whenInTests} from "./valueIfNoReturnValueSet";
 
 export interface ReturnSetter<T> {
     //noinspection ReservedWordAsName

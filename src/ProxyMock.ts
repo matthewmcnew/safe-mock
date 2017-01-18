@@ -1,17 +1,6 @@
-import {ReturnSetter, verifier} from "./SafeMock";
-import CallsDontMatchError from "./CallsDontMatchError";
-import {_setReturnValue, valueIfNoReturnValueSet} from './valueIfNoReturnValueSet';
-
-
-export function whenInTests<T>(returnFromMock: T): ReturnSetter<T> {
-    //noinspection ReservedWordAsName
-    return {
-        return(returnValue: T): void {
-            (returnFromMock as any)[_setReturnValue](returnValue);
-        }
-    };
-}
-
+import {verifier} from './SafeMock';
+import CallsDontMatchError from './CallsDontMatchError';
+import {valueIfNoReturnValueSet} from './valueIfNoReturnValueSet';
 
 export const verifyInTests: verifier = (mockToVerify: any): any => {
     return mockToVerify.verifier;

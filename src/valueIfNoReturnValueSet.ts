@@ -1,5 +1,15 @@
-export const _setReturnValue = Symbol('_setReturnValue');
+import {ReturnSetter} from './SafeMock';
 
+const _setReturnValue = Symbol('_setReturnValue');
+
+export function whenInTests<T>(returnFromMock: T): ReturnSetter<T> {
+    //noinspection ReservedWordAsName
+    return {
+        return(returnValue: T): void {
+            (returnFromMock as any)[_setReturnValue](returnValue);
+        }
+    };
+}
 
 export function valueIfNoReturnValueSet(propertyName: any, futureReturnValueSetter: (returnValue: any) => void) {
 
