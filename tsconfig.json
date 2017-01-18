@@ -9,6 +9,6 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "sourceMap": false,
-    "declaration": true
+    "declaration": false
   }
 }
