@@ -1,2 +1,5 @@
+*.ts
+.idea
+test/
 !*.js
 !*.d.ts

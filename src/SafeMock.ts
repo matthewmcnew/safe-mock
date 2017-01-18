@@ -77,7 +77,7 @@ export type Mock<T> = {
     [P in keyof T]: MockedThing<T[P]>
     }
 
-const SafeMock = {
+export const SafeMock = {
     build<T>(): Mock<T> {
         const mock: T = {} as any;
         let proxyMock: ProxyHandler<T> = new ProxyMock<T>();
