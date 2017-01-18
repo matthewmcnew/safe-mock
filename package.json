@@ -1,11 +1,13 @@
 {
   "name": "safe-mock",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/SafeMock.ts",
+  "typings": "src/SafeMock",
   "scripts": {
     "test": "mocha test --require ts-node/register test/**/*.ts && npm run build",
-    "build": "tsc"
+    "build": "tsc",
+    "prepublish": "tsc"
   },
   "author": "",
   "license": "ISC",

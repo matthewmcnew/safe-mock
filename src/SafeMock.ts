@@ -23,47 +23,47 @@ export interface verifier {
     <T, K, L, J, A, B, C, D, E, F, X>(thing: MockedThing<(k: K, l: L, j: J, a: A, b: B, c: C, d: D, e: E, f: F, x: X) => T>): CallVerifier10<K, L, J, A, B, C, D, E, F, X>
 }
 
-interface CallVerifierNoArgs {
+export interface CallVerifierNoArgs {
     called(): void
 }
 
-interface CallVerifier1<K> {
+export interface CallVerifier1<K> {
     calledWith(k: K): void
 }
 
-interface CallVerifier2<K, L> {
+export interface CallVerifier2<K, L> {
     calledWith(k: K, l: L): void
 }
 
-interface CallVerifier3<K, L, J> {
+export interface CallVerifier3<K, L, J> {
     calledWith(k: K, l: L, j: J): void
 }
 
-interface CallVerifier4<K, L, J, A> {
+export interface CallVerifier4<K, L, J, A> {
     calledWith(k: K, l: L, j: J, a: A): void
 }
 
-interface CallVerifier5<K, L, J, A, B> {
+export interface CallVerifier5<K, L, J, A, B> {
     calledWith(k: K, l: L, j: J, a: A, b: B): void
 }
 
-interface CallVerifier6<K, L, J, A, B, C> {
+export interface CallVerifier6<K, L, J, A, B, C> {
     calledWith(k: K, l: L, j: J, a: A, b: B, c: C): void
 }
 
-interface CallVerifier7<K, L, J, A, B, C, D> {
+export interface CallVerifier7<K, L, J, A, B, C, D> {
     calledWith(k: K, l: L, j: J, a: A, b: B, c: C, d: D): void
 }
 
-interface CallVerifier8<K, L, J, A, B, C, D, E> {
+export interface CallVerifier8<K, L, J, A, B, C, D, E> {
     calledWith(k: K, l: L, j: J, a: A, b: B, c: C, d: D, e: E): void
 }
 
-interface CallVerifier9<K, L, J, A, B, C, D, E, F> {
+export interface CallVerifier9<K, L, J, A, B, C, D, E, F> {
     calledWith(k: K, l: L, j: J, a: A, b: B, c: C, d: D, e: E, f: F): void
 }
 
-interface CallVerifier10<K, L, J, A, B, C, D, E, F, X> {
+export interface CallVerifier10<K, L, J, A, B, C, D, E, F, X> {
     calledWith(k: K, l: L, j: J, a: A, b: B, c: C, d: D, e: E, f: F, x: X): void
 }
 
