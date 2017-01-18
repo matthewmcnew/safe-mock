@@ -1,7 +1,7 @@
 import {ReturnSetter, verifier} from "./SafeMock";
 import CallsDontMatchError from "./CallsDontMatchError";
+import {_setReturnValue, valueIfNoReturnValueSet} from './valueIfNoReturnValueSet';
 
-const _setReturnValue = Symbol('_setReturnValue');
 
 export function whenInTests<T>(returnFromMock: T): ReturnSetter<T> {
     //noinspection ReservedWordAsName
@@ -17,12 +17,6 @@ export const verifyInTests: verifier = (mockToVerify: any): any => {
     return mockToVerify.verifier;
 };
 
-class ValueIfNoReturnValueSet extends Error {
-    constructor(propertyName: any, futureValueSetter: (returnValue: any) => void) {
-        super(`MockReturn [${propertyName}] has No return value Set`);
-        (this as any)[_setReturnValue] = futureValueSetter;
-    }
-}
 
 class Verifier {
     constructor(private repo: ReturnValueMatcherRepo, private propertyKey: PropertyKey) {
@@ -123,9 +117,11 @@ export class ProxyMock<T> implements ProxyHandler<T> {
             if (matchingReturnValue)
                 return matchingReturnValue;
 
-            return new ValueIfNoReturnValueSet(propertyKey, (returnValue: any) => {
-                this.returnValueMatcherRepo.setReturnValue(propertyKey, returnValue, argsToMatch);
-            });
+            return valueIfNoReturnValueSet(
+                propertyKey,
+                (returnValue: any) => this.returnValueMatcherRepo.setReturnValue(propertyKey, returnValue, argsToMatch)
+            );
+
         };
 
         (mockedFunc as any).verifier = new Verifier(this.returnValueMatcherRepo, propertyKey);

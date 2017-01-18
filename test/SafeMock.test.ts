@@ -17,83 +17,134 @@ class Complex {
 }
 
 describe('SafeMock', () => {
-    describe("setting return values", () => {
-        it("allows setting return args for no arg mockedMethods", () => {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+    describe("return values from mocks", () => {
 
-            when(mock.createSomethingNoArgs()).return("Expected Return");
+        describe("setting return values via DSL", () => {
+            it("allows setting return args for no arg mockedMethods", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
-            expect(mock.createSomethingNoArgs()).to.equal("Expected Return");
+                when(mock.createSomethingNoArgs()).return("Expected Return");
+
+                expect(mock.createSomethingNoArgs()).to.equal("Expected Return");
+            });
+
+            it("allows setting return args for 1 arg mockedMethods", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                when(mock.createSomethingOneArg("ArgToTriggerReturn")).return("Some Return Value");
+
+                expect(mock.createSomethingOneArg("ArgToTriggerReturn")).to.equal("Some Return Value");
+            });
+
+            it("allows setting multiple returnValues for mockedMethods", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                when(mock.createSomethingOneArg("1")).return("one");
+                when(mock.createSomethingOneArg("2")).return("two");
+                when(mock.createSomethingOneArg("3")).return("three");
+                when(mock.createSomethingOneArg("4")).return("four");
+
+                expect(mock.createSomethingOneArg("4")).to.equal("four");
+                expect(mock.createSomethingOneArg("3")).to.equal("three");
+                expect(mock.createSomethingOneArg("2")).to.equal("two");
+                expect(mock.createSomethingOneArg("1")).to.equal("one");
+            });
+
+            it("allows setting return args for 1+ arg mockedMethods", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                when(mock.createSomethingMultipleArgs("arg1", "arg2", "arg3")).return(123);
+                when(mock.createSomethingMultipleArgs("arg7", "arg8", "arg9")).return(789);
+
+                expect(mock.createSomethingMultipleArgs("arg1", "arg2", "arg3")).to.equal(123);
+                expect(mock.createSomethingMultipleArgs("arg7", "arg8", "arg9")).to.equal(789);
+            });
+
+            it("does not return set return value if argument's dont match", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                when(mock.createSomethingOneArg("ArgToTriggerReturn")).return("Some Return Value");
+
+                expect(mock.createSomethingOneArg("Not Matching ARgs")).not.to.equal("Some Return Value");
+            });
+
+            it("matches on Complex args correctly if objects match", function () {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                when(mock.matchesComplexArgs(new Complex({
+                    a: "hello",
+                    b: 123
+                }))).return("Expected only for matching object");
+
+                expect(mock.matchesComplexArgs(new Complex({
+                    a: "nope",
+                    b: 123
+                }))).not.to.equal("Expected only for matching object");
+
+                expect(mock.matchesComplexArgs(new Complex({
+                    a: "hello",
+                    b: -1
+                }))).not.to.equal("Expected only for matching object");
+
+                expect(mock.matchesComplexArgs(new Complex({
+                    a: "hello",
+                    b: 123
+                }))).to.equal("Expected only for matching object");
+            });
         });
 
-        it("allows setting return args for 1 arg mockedMethods", () => {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+        describe("No Return Value Set", () => {
 
-            when(mock.createSomethingOneArg("ArgToTriggerReturn")).return("Some Return Value");
+            it("returns Object from mock that nicely says it has not been mocked yet", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
-            expect(mock.createSomethingOneArg("ArgToTriggerReturn")).to.equal("Some Return Value");
-        });
+                expect(mock.createSomethingNoArgs().toString()).to.equal("MockReturn [createSomethingNoArgs] has No return value Set. Set a mock return value for it.")
+            });
 
-        it("allows setting multiple returnValues for mockedMethods", () => {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+            it("returns object from mock that throws exception if anyone calls a method on it", () => {
+                interface SomeObjectThatMockReturns {
+                    thisSHouldBlowUpFromMock(): void
+                }
 
-            when(mock.createSomethingOneArg("1")).return("one");
-            when(mock.createSomethingOneArg("2")).return("two");
-            when(mock.createSomethingOneArg("3")).return("three");
-            when(mock.createSomethingOneArg("4")).return("four");
+                interface ObjectToMock {
+                    returnTheObject(): SomeObjectThatMockReturns
+                }
 
-            expect(mock.createSomethingOneArg("4")).to.equal("four");
-            expect(mock.createSomethingOneArg("3")).to.equal("three");
-            expect(mock.createSomethingOneArg("2")).to.equal("two");
-            expect(mock.createSomethingOneArg("1")).to.equal("one");
-        });
+                const mock: Mock<ObjectToMock> = SafeMock.build<ObjectToMock>();
 
-        it("allows setting return args for 1+ arg mockedMethods", () => {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+                expect(() => {
+                    mock.returnTheObject().thisSHouldBlowUpFromMock();
+                }).to.throw(`returnTheObject has not been mocked yet. Set a mock return value for it.`);
+            });
 
-            when(mock.createSomethingMultipleArgs("arg1", "arg2", "arg3")).return(123);
-            when(mock.createSomethingMultipleArgs("arg7", "arg8", "arg9")).return(789);
+            it("returns object from mock that throws exception if anyone tries to set a field on it", () => {
+                interface SomeObjectThatMockReturns {
+                    field: string
+                }
 
-            expect(mock.createSomethingMultipleArgs("arg1", "arg2", "arg3")).to.equal(123);
-            expect(mock.createSomethingMultipleArgs("arg7", "arg8", "arg9")).to.equal(789);
-        });
+                interface ObjectToMock {
+                    returnTheObject(): SomeObjectThatMockReturns
+                }
 
-        it("returns Object That nicely says it has not been mocked yet", () => {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+                const mock: Mock<ObjectToMock> = SafeMock.build<ObjectToMock>();
 
-            expect(mock.createSomethingNoArgs().toString()).to.equal("Error: MockReturn [createSomethingNoArgs] has No return value Set")
-        });
+                expect(() => {
+                    mock.returnTheObject().field = "Oh Hello";
+                }).to.throw(`returnTheObject has not been mocked yet. Set a mock return value for it.`);
+            });
 
-        it("does not return set return value if argument's dont match", () => {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
-            when(mock.createSomethingOneArg("ArgToTriggerReturn")).return("Some Return Value");
+            it("returns object from mock that throws exception if anyone tries to call it", () => {
+                interface ObjectToMock {
+                    returnTheObject(): () => void
+                }
 
-            expect(mock.createSomethingOneArg("Not Matching ARgs")).not.to.equal("Some Return Value");
-        });
+                const mock: Mock<ObjectToMock> = SafeMock.build<ObjectToMock>();
 
-        it("matches on Complex args correctly if objects match", function () {
-            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
-
-            when(mock.matchesComplexArgs(new Complex({
-                a: "hello",
-                b: 123
-            }))).return("Expected only for matching object");
-
-            expect(mock.matchesComplexArgs(new Complex({
-                a: "nope",
-                b: 123
-            }))).not.to.equal("Expected only for matching object");
-
-            expect(mock.matchesComplexArgs(new Complex({
-                a: "hello",
-                b: -1
-            }))).not.to.equal("Expected only for matching object");
-
-            expect(mock.matchesComplexArgs(new Complex({
-                a: "hello",
-                b: 123
-            }))).to.equal("Expected only for matching object");
+                expect(() => {
+                    mock.returnTheObject()();
+                }).to.throw(`returnTheObject has not been mocked yet. Set a mock return value for it.`);
+            });
         });
     });
 
