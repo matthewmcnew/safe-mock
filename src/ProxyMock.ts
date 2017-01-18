@@ -38,14 +38,15 @@ class Verifier {
             throw new Error(`${this.propertyKey} was not called`)
     }
 
-    calledWith(expectedArg: any) {
+    //noinspection JSUnusedGlobalSymbols
+    calledWith(...expectedArgs: any[]) {
         const calls = this.repo.lookupCalls(this.propertyKey);
 
         const [callIfExists] = calls
-            .filter(expectedCall => JSON.stringify(expectedCall) === JSON.stringify([expectedArg]));
+            .filter(expectedCall => JSON.stringify(expectedCall) === JSON.stringify(expectedArgs));
 
         if (callIfExists == undefined) {
-            throw new CallsDontMatchError(expectedArg, calls, this.propertyKey);
+            throw new CallsDontMatchError(expectedArgs, calls, this.propertyKey);
         }
     }
 }
