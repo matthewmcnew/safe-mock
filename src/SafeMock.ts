@@ -77,12 +77,13 @@ export type Mock<T> = {
     [P in keyof T]: MockedThing<T[P]>
     }
 
-export default class SafeMock {
-    static build<T>(): Mock<T> {
+const SafeMock = {
+    build<T>(): Mock<T> {
         const mock: T = {} as any;
         let proxyMock: ProxyHandler<T> = new ProxyMock<T>();
         return new Proxy((mock as any), (proxyMock as any));
     }
-}
+};
 
+export default SafeMock;
 export {whenInTests as when, verifyInTests as verify};

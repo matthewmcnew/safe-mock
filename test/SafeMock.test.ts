@@ -72,7 +72,7 @@ describe('SafeMock', () => {
             expect(mock.createSomethingOneArg("Not Matching ARgs")).not.to.equal("Some Return Value");
         });
 
-        it("watches on Complex args correctly if objects match", function () {
+        it("matches on Complex args correctly if objects match", function () {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             when(mock.matchesComplexArgs(new Complex({
@@ -84,6 +84,7 @@ describe('SafeMock', () => {
                 a: "nope",
                 b: 123
             }))).not.to.equal("Expected only for matching object");
+
             expect(mock.matchesComplexArgs(new Complex({
                 a: "hello",
                 b: -1
@@ -94,7 +95,6 @@ describe('SafeMock', () => {
                 b: 123
             }))).to.equal("Expected only for matching object");
         });
-
     });
 
     describe('verifying calls', () => {
@@ -126,7 +126,7 @@ describe('SafeMock', () => {
 
                     expect(() => {
                         verify(mock.createSomethingOneArg).calledWith("ExpectedCall");
-                    }).to.throw("createSomethingOneArg was not called with: [ExpectedCall]");
+                    }).to.throw(`createSomethingOneArg was not called with: ("ExpectedCall")`);
                 });
 
                 it("throws an exception with previous interactions", () => {
@@ -137,8 +137,8 @@ describe('SafeMock', () => {
 
                     expect(() => {
                         verify(mock.createSomethingOneArg).calledWith("ExpectedCall");
-                    }).to.throw("createSomethingOneArg was not called with: [ExpectedCall]\n" +
-                        "       Other interactions with this mock: [First Call, Second Call]");
+                    }).to.throw(`createSomethingOneArg was not called with: ("ExpectedCall")\n` +
+                        `       Other interactions with this mock: [("First Call"),("Second Call")]`);
                 });
 
                 it("does not throw exception if calls match", () => {
@@ -148,8 +148,29 @@ describe('SafeMock', () => {
 
                     verify(mock.createSomethingOneArg).calledWith("ExpectedArg!");
                 });
-            });
 
+                it("matches verify on object arguments", () => {
+                    interface ObjectArgMock {
+                        methodWithObjectArg(object: {a: string, b: number}): void
+                    }
+
+                    const mock: Mock<ObjectArgMock> = SafeMock.build<ObjectArgMock>();
+
+                    expect(() => {
+                        verify(mock.methodWithObjectArg).calledWith({a: "expectedString", b: 99});
+                    }).to.throw(`methodWithObjectArg was not called with: ({"a":"expectedString","b":99})`);
+
+                    mock.methodWithObjectArg({a: "notExpectedString", b: 99});
+
+                    expect(() => {
+                        verify(mock.methodWithObjectArg).calledWith({a: "expectedString", b: 99});
+                    }).to.throw();
+
+                    mock.methodWithObjectArg({a: "expectedString", b: 99});
+
+                    verify(mock.methodWithObjectArg).calledWith({a: "expectedString", b: 99});
+                });
+            });
 
             describe("Two Argument methods", function () {
                 interface TwoArgs {
@@ -163,7 +184,7 @@ describe('SafeMock', () => {
 
                     expect(() => {
                         verify(mock.method).calledWith(1, "expected");
-                    }).to.throw("method was not called with: [1, expected]");
+                    }).to.throw(`method was not called with: (1, "expected")`);
                 });
 
                 it("does not throw exception if arguments match", () => {
@@ -206,42 +227,42 @@ describe('SafeMock', () => {
 
                     expect(() => {
                         verify(mock.three).calledWith("1", "2", "Different");
-                    }).to.throw("three was not called with: [1, 2, Different]");
+                    }).to.throw("three was not called");
 
 
                     expect(() => {
                         verify(mock.four).calledWith("1", "2", "3", "Different");
-                    }).to.throw("four was not called with: [1, 2, 3, Different]");
+                    }).to.throw("four was not called");
 
 
                     expect(() => {
                         verify(mock.five).calledWith("1", "2", "3", "4", "Different");
-                    }).to.throw("five was not called with: [1, 2, 3, 4, Different]");
+                    }).to.throw("five was not called");
 
 
                     expect(() => {
                         verify(mock.six).calledWith("1", "2", "3", "4", "5", "Different");
-                    }).to.throw("six was not called with: [1, 2, 3, 4, 5, Different]");
+                    }).to.throw("six was not called");
 
 
                     expect(() => {
                         verify(mock.seven).calledWith("1", "2", "3", "4", "5", "6", "Different");
-                    }).to.throw("seven was not called with: [1, 2, 3, 4, 5, 6, Different]");
+                    }).to.throw("seven was not called");
 
 
                     expect(() => {
                         verify(mock.eight).calledWith("1", "2", "3", "4", "5", "6", "7", "Different");
-                    }).to.throw("eight was not called with: [1, 2, 3, 4, 5, 6, 7, Different]");
+                    }).to.throw("eight was not called");
 
 
                     expect(() => {
                         verify(mock.nine).calledWith("1", "2", "3", "4", "5", "6", "7", "8", "Different");
-                    }).to.throw("nine was not called with: [1, 2, 3, 4, 5, 6, 7, 8, Different]");
+                    }).to.throw("nine was not called");
 
 
                     expect(() => {
                         verify(mock.ten).calledWith("1", "2", "3", "4", "5", "6", "7", "8", "9", "Different");
-                    }).to.throw("ten was not called with: [1, 2, 3, 4, 5, 6, 7, 8, 9, Different]");
+                    }).to.throw("ten was not called");
                 });
 
                 it("does not throw an exception if called with matching args", () => {
@@ -266,8 +287,6 @@ describe('SafeMock', () => {
                     verify(mock.ten).calledWith("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
                 });
             });
-
-
         });
     });
 });
