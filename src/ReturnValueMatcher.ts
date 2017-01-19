@@ -1,13 +1,15 @@
+import ArgumentInvocation from "./ArgumentInvocation";
+
 export default class ReturnValueMatcher {
 
-    constructor(private argsToMatch: any[], public returnValue: any) {
+    constructor(private argsToMatch: ArgumentInvocation, public returnValue: any) {
     }
 
-    match(possibleArgsToMatch: any[]) {
-        return JSON.stringify(possibleArgsToMatch) === JSON.stringify(this.argsToMatch);
+    match(possibleArgsToMatch: ArgumentInvocation) {
+        return possibleArgsToMatch.equivalentTo(this.argsToMatch);
     }
 
     printArgs(): string {
-        return JSON.stringify(this.argsToMatch);
+        return this.argsToMatch.prettyPrint();
     }
 }

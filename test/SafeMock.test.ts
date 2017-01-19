@@ -132,8 +132,9 @@ describe('SafeMock', () => {
                 when(mock.returnTheObject({a: 'when'})).return({field: "hello"});
 
                 expect(() => {
+                    //noinspection JSUnusedLocalSymbols
                     const dontMindMe = mock.returnTheObject({a: 'not Matching'}).field;
-                }).to.throw(`returnTheObject was stubbed to return a value when called with [{"a":"when"}] but was called with: [{"a":"not Matching"}`);
+                }).to.throw(`returnTheObject was stubbed to return a value when called with ({"a":"when"}) but was called with: ({"a":"not Matching"})`);
             });
 
             it("returns object from mock that throws exception if anyone tries to set a field on it", () => {
