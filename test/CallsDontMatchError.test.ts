@@ -23,7 +23,7 @@ describe('CallsDontMatchError', () => {
         it("Displays Classes With ClassName", () => {
             const message = new CallsDontMatchError([new IWantToBePrettyPrinted("hello"), 1, "stringsStayTheSame"], [], 'method').message;
 
-            expect(message).to.contain(`method was not called with: ({"a":"hello"}, 1, "stringsStayTheSame")`);
+            expect(message).to.contain(`method was not called with: (IWantToBePrettyPrinted{"a":"hello"}, 1, "stringsStayTheSame")`);
         });
 
         it("Does Not Show Other Interactions with Mock if none occured", () => {

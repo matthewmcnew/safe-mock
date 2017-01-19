@@ -12,13 +12,10 @@ function inBraces(joiner: (a: any[]) => string) {
     }
 }
 
-function isSpecialObject(arg: any) {
+function isSpecialObject(arg: any): boolean {
     let constructorName = arg.constructor.name;
-
-    let index = primitives.indexOf(constructorName);
-
-    if (index === -1)
-        return false;
+    const notFound = -1;
+    return primitives.indexOf(constructorName) === notFound;
 }
 
 function printObject(arg: any): string {
