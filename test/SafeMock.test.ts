@@ -68,7 +68,7 @@ describe('SafeMock', () => {
                 expect(mock.createSomethingOneArg("Not Matching ARgs")).not.to.equal("Some Return Value");
             });
 
-            it("matches on Complex args correctly if objects match", function () {
+            it("matches on Complex args correctly if objects match", () => {
                 const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
                 when(mock.matchesComplexArgs(new Complex({
@@ -241,9 +241,30 @@ describe('SafeMock', () => {
 
                     verify(mock.methodWithObjectArg).calledWith({a: "expectedString", b: 99});
                 });
+
+
+                it("throws exception if called arguments' prototypes dont match", () => {
+                    class SomeClass {
+                        //noinspection JSUnusedGlobalSymbols
+                        constructor(public someValue: string) {
+                        }
+                    }
+
+                    interface ObjectArgMock {
+                        methodWithClassArg(object: SomeClass): void
+                    }
+
+                    const mock: Mock<ObjectArgMock> = SafeMock.build<ObjectArgMock>();
+
+                    mock.methodWithClassArg({someValue: "some value"});
+
+                    expect(() => {
+                        verify(mock.methodWithClassArg).calledWith(new SomeClass("some value"));
+                    }).to.throw(`methodWithClassArg was not called with: (SomeClass{"someValue":"some value"}`);
+                });
             });
 
-            describe("Two Argument methods", function () {
+            describe("Two Argument methods", () => {
                 interface TwoArgs {
                     method(arg: number, arg2: string): void
                 }
@@ -271,8 +292,7 @@ describe('SafeMock', () => {
                 });
             });
 
-
-            describe("Three+ Argument methods", function () {
+            describe("Three+ Argument methods", () => {
                 interface ThreePlus {
                     three(arg: string, arg2: string, arg3: string): void
                     four(arg: string, arg2: string, arg3: string, arg4: string): void
