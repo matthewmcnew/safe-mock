@@ -37,7 +37,6 @@ verify(mock.createSomething).calledWith(123); // Error! createSomething never ca
 ```
 
 ##### Rely On the Typescript Compiler to prevent mistakes. 
-##### Rely On the Typescript Compiler to prevent mistakes. 
 
 ```typescript
 interface SomeService {
