@@ -5,6 +5,9 @@ import WhyNoReturnValueMatched from './WhyNoReturnValueMatched';
 import ReturnValueMatcher from './ReturnValueMatcher';
 import LookupResult from './LookupResult';
 import ArgumentInvocation from "./ArgumentInvocation";
+import AnyArgsMatch from "./AnyArgsMatch";
+import _setReturnValueNoArgs from "./_setReturnValueNoArgsSymbol";
+import {ArgumentInvocationMatcher} from "./ReturnValueMatcher";
 
 export const verifyInTests: verifier = (mockToVerify: any): any => {
     return mockToVerify.verifier;
@@ -61,7 +64,7 @@ class ReturnValueMatcherRepo {
         }
     }
 
-    setReturnValue(propertyKey: PropertyKey, returnValue: any, argsToMatch: ArgumentInvocation) {
+    setReturnValue(propertyKey: PropertyKey, returnValue: any, argsToMatch: ArgumentInvocationMatcher) {
         if (!this.returnValueMatcherMap[propertyKey])
             this.returnValueMatcherMap[propertyKey] = [];
 
@@ -101,6 +104,9 @@ export class ProxyMock<T> implements ProxyHandler<T> {
         };
 
         (mockedFunc as any).verifier = new Verifier(this.returnValueMatcherRepo, propertyKey);
+
+        (mockedFunc as any)[_setReturnValueNoArgs] =
+            (returnValue: any) => this.returnValueMatcherRepo.setReturnValue(propertyKey, returnValue, new AnyArgsMatch());
 
         return mockedFunc;
     }

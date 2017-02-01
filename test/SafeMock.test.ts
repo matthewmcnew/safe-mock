@@ -91,6 +91,14 @@ describe('SafeMock', () => {
                     b: 123
                 }))).to.equal("Expected only for matching object");
             });
+
+            it("supports setting return values without arguments", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                when(mock.createSomethingOneArg).return("Stubbed Return Value");
+
+                expect(mock.createSomethingOneArg("this should not matter")).to.eq("Stubbed Return Value")
+            });
         });
 
         describe("No Return Value Set", () => {
@@ -116,7 +124,6 @@ describe('SafeMock', () => {
                     const dontMindMedontMindMe = mock.returnTheObject().field;
                 }).to.throw(`returnTheObject has not been mocked yet. Set a mock return value for it.`);
             });
-
 
             it("returns object from mock that throws exception with stubbed argument methods for helpful debugging", () => {
                 interface SomeObjectThatMockReturns {
@@ -152,7 +159,6 @@ describe('SafeMock', () => {
                     mock.returnTheObject().field = "Oh Hello";
                 }).to.throw(`returnTheObject has not been mocked yet. Set a mock return value for it.`);
             });
-
 
             it("returns object from mock that throws exception if anyone tries to call it", () => {
                 interface ObjectToMock {
@@ -378,6 +384,7 @@ describe('SafeMock', () => {
                     verify(mock.ten).calledWith("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
                 });
             });
+
         });
     });
 });

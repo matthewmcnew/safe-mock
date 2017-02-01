@@ -1,3 +1,4 @@
+import {ArgumentInvocationMatcher} from "./ReturnValueMatcher";
 const primitives: ReadonlyArray<String> = ["String", "Object", "Number"];
 
 function inBraces(joiner: (a: any[]) => string) {
@@ -30,7 +31,7 @@ function prettyPrint(expectedCall: any[]): string {
     return inBraces(joinArray)(expectedCall);
 }
 
-export default class ArgumentInvocation {
+export default class ArgumentInvocation implements ArgumentInvocationMatcher {
 
     constructor(private args: any[]) {
     }

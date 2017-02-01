@@ -1,15 +1,20 @@
 import ArgumentInvocation from "./ArgumentInvocation";
 
+export interface ArgumentInvocationMatcher {
+    equivalentTo(argumentInvocation: ArgumentInvocation): boolean
+    prettyPrint(): string
+}
+
 export default class ReturnValueMatcher {
 
-    constructor(private argsToMatch: ArgumentInvocation, public returnValue: any) {
+    constructor(private argumentInvocationMatcher: ArgumentInvocationMatcher, public returnValue: any) {
     }
 
     match(possibleArgsToMatch: ArgumentInvocation) {
-        return possibleArgsToMatch.equivalentTo(this.argsToMatch);
+        return this.argumentInvocationMatcher.equivalentTo(possibleArgsToMatch);
     }
 
     printArgs(): string {
-        return this.argsToMatch.prettyPrint();
+        return this.argumentInvocationMatcher.prettyPrint();
     }
 }

@@ -1,13 +1,26 @@
-import {ReturnSetter} from './SafeMock';
+import {ReturnSetter, MockedThing} from './SafeMock';
 import WhyReturnValueDidntMatch from './WhyNoReturnValueMatched';
+import _setReturnValueNoArgs from "./_setReturnValueNoArgsSymbol";
 
 const _setReturnValue = Symbol('_setReturnValue');
 
-export function whenInTests<T>(returnFromMock: T): ReturnSetter<T> {
+type MockedFunction<T> = (...args: any[]) => T;
+type WhenArgument<T> = MockedThing<MockedFunction<T>> | T;
+
+export function whenInTests<T>(whenArg: WhenArgument<T>): ReturnSetter<T> {
+    if ((<any>whenArg)[_setReturnValueNoArgs]) {
+        //noinspection ReservedWordAsName
+        return {
+            return(returnValue: T): void {
+                (<any>whenArg)[_setReturnValueNoArgs](returnValue);
+            }
+        };
+    }
+
     //noinspection ReservedWordAsName
     return {
         return(returnValue: T): void {
-            (returnFromMock as any)[_setReturnValue](returnValue);
+            (whenArg as any)[_setReturnValue](returnValue);
         }
     };
 }
@@ -20,6 +33,10 @@ export function valueIfNoReturnValueSet(whyNoMatch: WhyReturnValueDidntMatch, fu
 
     class ValueIfNoReturnValueSet implements ProxyHandler<{}> {
         get?(target: {}, propertyKey: PropertyKey, receiver: any): any {
+            if (propertyKey === _setReturnValueNoArgs)
+                return undefined;
+
+
             if (propertyKey === _setReturnValue) {
                 return futureReturnValueSetter;
             }
