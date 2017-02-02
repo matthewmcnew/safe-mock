@@ -89,11 +89,18 @@ export type Mock<T> = {
     [P in keyof T]: MockedThing<T[P]>
     }
 
+export type MockedFunction<T extends Function> = T & Mocked;
+
 export const SafeMock = {
     build<T>(): Mock<T> {
         const mock: T = {} as any;
         let proxyMock: ProxyHandler<T> = new ProxyMock<T>();
         return new Proxy((mock as any), (proxyMock as any));
+    },
+
+    mockFunction<T extends Function>(name: string): MockedFunction<T> {
+        let proxyMock: ProxyHandler<{}> = new ProxyMock<{}>();
+        return proxyMock.get!({}, name, null);
     }
 };
 

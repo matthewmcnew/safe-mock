@@ -1,6 +1,5 @@
 import {expect} from "chai";
-import SafeMock from "../src/SafeMock";
-import {Mock, when, verify} from "../src/SafeMock";
+import SafeMock, {Mock, when, verify, MockedFunction} from "../src/SafeMock";
 
 interface SomeService {
     createSomethingNoArgs(): string;
@@ -98,6 +97,36 @@ describe('SafeMock', () => {
                 when(mock.createSomethingOneArg).return("Stubbed Return Value");
 
                 expect(mock.createSomethingOneArg("this should not matter")).to.eq("Stubbed Return Value")
+            });
+
+            it("allows setting return args for mocked Methods", () => {
+                type FunctionToMock = () => string;
+
+                const mockedFunction: MockedFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("name");
+
+                when(mockedFunction()).return("Expected Return");
+
+                expect(mockedFunction()).to.equal("Expected Return");
+            });
+
+            it("allows setting return args for mocked Methods with multiple args", () => {
+                type FunctionToMock = (arg: string, arg2: string) => string;
+
+                const mockedFunction: MockedFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("name");
+
+                when(mockedFunction("one", "two")).return("Expected Return");
+
+                expect(mockedFunction("one", "two")).to.equal("Expected Return");
+            });
+
+            it("does not return value if args do not match", () => {
+                type FunctionToMock = (arg: string, arg2: string) => string;
+
+                const mockedFunction: MockedFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("name");
+
+                when(mockedFunction("one", "two")).return("UnExpected Return");
+
+                expect(mockedFunction("something", "else")).not.to.equal("UnExpected Return");
             });
         });
 
@@ -216,6 +245,26 @@ describe('SafeMock', () => {
                 mock.createSomethingNoArgs();
 
                 verify(mock.createSomethingNoArgs).called()
+            });
+        });
+
+        describe('on mocked Functions', () => {
+            type FunctionToMock = () => string;
+
+            it("throws an exception if Not Called", () => {
+                const mockedFunction: MockedFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("nameOfFunc");
+
+                expect(() => {
+                    verify(mockedFunction).called()
+                }).to.throw("nameOfFunc was not called");
+            });
+
+            it("does not throw an exception if it was Called", () => {
+                const mockedFunction: MockedFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("nameOfFunc");
+
+                mockedFunction();
+
+                verify(mockedFunction).called()
             });
         });
 
