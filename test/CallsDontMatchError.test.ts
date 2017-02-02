@@ -27,7 +27,7 @@ describe('CallsDontMatchError', () => {
             expect(message).to.contain(`method was not called with: (IWantToBePrettyPrinted{"a":"hello"}, 1, "stringsStayTheSame")`);
         });
 
-        it("Does Not Show Other Interactions with Mock if none occured", () => {
+        it("Does Not Show Other Interactions with Mock if none occurred", () => {
             const message = new CallsDontMatchError(new ArgumentInvocation([new IWantToBePrettyPrinted("hello"), 1, "stringsStayTheSame"]), [], 'method').message;
 
             expect(message).not.to.contain(`Other interactions with this mock:`);
