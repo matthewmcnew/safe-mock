@@ -17,6 +17,10 @@ export function whenInTests<T>(whenArg: WhenArgument<T>): ReturnSetter<T> {
         };
     }
 
+    if((whenArg as any)[_setReturnValue] === undefined){
+        throw new Error("Whoops! Looks like you called `when` incorrectly. Make sure you create a Mock First!")
+    }
+
     //noinspection ReservedWordAsName
     return {
         return(returnValue: T): void {

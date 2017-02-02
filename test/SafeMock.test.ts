@@ -128,6 +128,12 @@ describe('SafeMock', () => {
 
                 expect(mockedFunction("something", "else")).not.to.equal("UnExpected Return");
             });
+
+            it("throws friendly exception if when is called with a non mocked thing", () => {
+                expect(() => {
+                    when("this is no good").return("holla")
+                }).to.throw("Whoops! Looks like you called `when` incorrectly. Make sure you create a Mock First!");
+            });
         });
 
         describe("No Return Value Set", () => {
