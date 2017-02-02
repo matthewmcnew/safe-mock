@@ -412,5 +412,43 @@ describe('SafeMock', () => {
             });
 
         });
+
+        describe('verifying no interactions', () => {
+            it('never.called() exception if interaction occurred', () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                mock.createSomethingNoArgs();
+                mock.createSomethingNoArgs();
+
+                expect(() => {
+                    verify(mock.createSomethingNoArgs).never.called()
+                }).to.throw("createSomethingNoArgs was called 2 times");
+            });
+
+            it('never.called() does not throw exception if no interaction occurred', () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+                verify(mock.createSomethingNoArgs).never.called()
+            });
+
+            it('never.calledWith() exception if interaction occurred', () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                mock.createSomethingOneArg("call");
+                mock.createSomethingOneArg("call");
+
+                expect(() => {
+                    verify(mock.createSomethingOneArg).never.calledWith("call")
+                }).to.throw(`createSomethingOneArg was called 2 times with ("call")`);
+            });
+
+
+            it('never.calledWith() does not throw exception if no matching interaction occurred', () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                mock.createSomethingOneArg("differnent call");
+
+                verify(mock.createSomethingOneArg).never.calledWith("call");
+            });
+        })
     });
 });
