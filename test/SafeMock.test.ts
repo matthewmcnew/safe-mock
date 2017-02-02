@@ -144,6 +144,32 @@ describe('SafeMock', () => {
                 }).to.throw(`returnTheObject was stubbed to return a value when called with ({"a":"when"}) but was called with: ({"a":"not Matching"})`);
             });
 
+
+            it("returns object from mock that throws exception with multiple stubbed argument methods for helpful debugging", () => {
+                interface SomeObjectThatMockReturns {
+                    field: string
+                }
+
+                interface ObjectToMock {
+                    returnTheObject(someArg: {a: string}): SomeObjectThatMockReturns
+                }
+
+                const mock: Mock<ObjectToMock> = SafeMock.build<ObjectToMock>();
+
+                when(mock.returnTheObject({a: 'when'})).return({field: "hello"});
+                when(mock.returnTheObject({a: 'other option'})).return({field: "hello"});
+
+                expect(() => {
+                    //noinspection JSUnusedLocalSymbols
+                    const dontMindMe = mock.returnTheObject({a: 'not Matching'}).field;
+                }).to.throw(`({"a":"when"})`);
+
+                expect(() => {
+                    //noinspection JSUnusedLocalSymbols
+                    const dontMindMe = mock.returnTheObject({a: 'not Matching'}).field;
+                }).to.throw(`({"a":"other option"})`)
+            });
+
             it("returns object from mock that throws exception if anyone tries to set a field on it", () => {
                 interface SomeObjectThatMockReturns {
                     field: string

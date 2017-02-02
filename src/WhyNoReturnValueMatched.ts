@@ -3,12 +3,12 @@ import ArgumentInvocation from "./ArgumentInvocation";
 
 
 export default class WhyNoReturnValueMatched {
-    constructor(private args: ArgumentInvocation, private setReturnValues: ReturnValueMatcher[], private propertyKey: PropertyKey) {
+    constructor(private args: ArgumentInvocation, private returnValueMatchers: ReturnValueMatcher[], private propertyKey: PropertyKey) {
     }
 
     reasonAndAdvice(): string {
         if (this.wereReturnValuesSet()) {
-            let stubbedArgs = this.argsForExisitingReturnValues().printArgs();
+            let stubbedArgs = this.argsForExisitingReturnValues();
             return `${this.propertyKey} was stubbed to return a value when called with ${stubbedArgs} but was called with: ${this.args.prettyPrint()}`
         }
 
@@ -17,10 +17,12 @@ export default class WhyNoReturnValueMatched {
     }
 
     private argsForExisitingReturnValues() {
-        return this.setReturnValues[0];
+        return this.returnValueMatchers
+            .map((arg)=> arg.printArgs())
+            .join(' or ');
     }
 
     private wereReturnValuesSet(): boolean {
-        return this.setReturnValues.length !== 0;
+        return this.returnValueMatchers.length !== 0;
     }
 }
