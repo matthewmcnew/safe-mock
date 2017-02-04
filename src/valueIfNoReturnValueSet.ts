@@ -1,6 +1,7 @@
 import {ReturnSetter, MockedThing} from './SafeMock';
 import WhyReturnValueDidntMatch from './WhyNoReturnValueMatched';
-import _setReturnValueNoArgs from "./_setReturnValueNoArgsSymbol";
+import _setStubbedActionNoArgs from "./_setStubbedActionNoArgsSymbol";
+import {ReturnValueAction, ThrowingAction} from "./StubbedActionMatcher";
 
 const _setReturnValue = Symbol('_setReturnValue');
 
@@ -8,11 +9,15 @@ type MockedFunction<T> = (...args: any[]) => T;
 type WhenArgument<T> = MockedThing<MockedFunction<T>> | T;
 
 export function whenInTests<T>(whenArg: WhenArgument<T>): ReturnSetter<T> {
-    if ((<any>whenArg)[_setReturnValueNoArgs]) {
+    if ((<any>whenArg)[_setStubbedActionNoArgs]) {
         //noinspection ReservedWordAsName
         return {
             return(returnValue: T): void {
-                (<any>whenArg)[_setReturnValueNoArgs](returnValue);
+                (<any>whenArg)[_setStubbedActionNoArgs](ReturnValueAction.of(returnValue));
+            },
+
+            throw(valueToThrow: any): void {
+                (<any>whenArg)[_setStubbedActionNoArgs](ThrowingAction.of(valueToThrow));
             }
         };
     }
@@ -24,7 +29,11 @@ export function whenInTests<T>(whenArg: WhenArgument<T>): ReturnSetter<T> {
     //noinspection ReservedWordAsName
     return {
         return(returnValue: T): void {
-            (whenArg as any)[_setReturnValue](returnValue);
+            (whenArg as any)[_setReturnValue](ReturnValueAction.of(returnValue));
+        },
+
+        throw(valueToThrow: any): void {
+            (whenArg as any)[_setReturnValue](ThrowingAction.of(valueToThrow));
         }
     };
 }
@@ -37,7 +46,7 @@ export function valueIfNoReturnValueSet(whyNoMatch: WhyReturnValueDidntMatch, fu
 
     class ValueIfNoReturnValueSet implements ProxyHandler<{}> {
         get?(target: {}, propertyKey: PropertyKey, receiver: any): any {
-            if (propertyKey === _setReturnValueNoArgs)
+            if (propertyKey === _setStubbedActionNoArgs)
                 return undefined;
 
 

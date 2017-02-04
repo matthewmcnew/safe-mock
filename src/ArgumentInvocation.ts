@@ -1,4 +1,4 @@
-import {ArgumentInvocationMatcher} from "./ReturnValueMatcher";
+import {ArgumentInvocationMatcher} from "./StubbedActionMatcher";
 const primitives: ReadonlyArray<String> = ["String", "Object", "Number"];
 
 function inBraces(joiner: (a: any[]) => string) {

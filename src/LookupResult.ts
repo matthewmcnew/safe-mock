@@ -1,24 +1,17 @@
 import WhyNoReturnValueMatched from './WhyNoReturnValueMatched';
+import StubbedActionMatcher from "./StubbedActionMatcher";
 
 export default class LookupResult {
 
-    private constructor(public returnFound: boolean, private _whyNoReturnValueMatched?: WhyNoReturnValueMatched, public _returnValue?: any) {
+    private constructor(public returnFound: boolean, private _whyNoReturnValueMatched?: WhyNoReturnValueMatched, public _returnValue?: StubbedActionMatcher) {
     }
 
     static noReturnValueMatched(whyNoReturnValueMatched: WhyNoReturnValueMatched): LookupResult {
         return new LookupResult(false, whyNoReturnValueMatched);
     }
 
-    static returnValueFound(returnValue: any): LookupResult {
+    static returnValueFound(returnValue: StubbedActionMatcher): LookupResult {
         return new LookupResult(true, undefined, returnValue);
-    }
-
-    public get returnValue(): any {
-        if (!this.returnFound) {
-            throw new Error('No Return Found. No Return available!')
-        }
-
-        return this._returnValue;
     }
 
     get whyNoReturnValueMatched(): WhyNoReturnValueMatched {
@@ -27,5 +20,14 @@ export default class LookupResult {
         }
 
         return this._whyNoReturnValueMatched!;
+    }
+
+    performMockedReturnValue() {
+        if (!this.returnFound) {
+            throw new Error('No Return Found. No Return available!')
+        }
+
+        return this._returnValue!.performMockedReturnValue();
+
     }
 }

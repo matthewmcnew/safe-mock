@@ -136,6 +136,51 @@ describe('SafeMock', () => {
             });
         });
 
+        describe("making mocks throw", () =>{
+            it("allows making mocks throw exceptions", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                when(mock.createSomethingNoArgs()).throw(new Error("Ah Geez!"));
+
+                expect(() => {
+                    mock.createSomethingNoArgs();
+                }).to.throw("Ah Geez!");
+            });
+
+            it("does not throw exceptions if args dont match", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                when(mock.createSomethingOneArg("cause problem1")).throw(new Error("Ah Geez 1!"));
+                when(mock.createSomethingOneArg("cause problem2")).throw(new Error("Ah Geez 2!"));
+
+                mock.createSomethingOneArg("unrelated");
+
+                expect(() => {
+                    mock.createSomethingOneArg("cause problem1");
+                }).to.throw("Ah Geez 1!");
+
+                expect(() => {
+                    mock.createSomethingOneArg("cause problem2");
+                }).to.throw("Ah Geez 2!");
+            });
+
+            it("allows setting thrown exceptions without specifying arguments", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                when(mock.createSomethingOneArg).throw(new Error("Ah Geez!"));
+
+                expect(() => {
+                    mock.createSomethingOneArg("cause problem1");
+                }).to.throw("Ah Geez!");
+
+                expect(() => {
+                    mock.createSomethingOneArg("cause problem2");
+                }).to.throw("Ah Geez!");
+            });
+
+
+        });
+
         describe("No Return Value Set", () => {
 
             it("returns object from mock that throws exception if anyone tries to get a field or a method on it", () => {

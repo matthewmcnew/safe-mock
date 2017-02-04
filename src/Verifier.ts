@@ -1,12 +1,12 @@
-import {ReturnValueMatcherRepo} from "./ReturnValueMatcherRepo";
 import ArgumentInvocation from "./ArgumentInvocation";
 import CallsDontMatchError from "./CallsDontMatchError";
+import {StubbedActionMatcherRepo} from "./StubbedActionMatcherRepo";
 
 
 export class Verifier {
     public never: NeverVerifier;
 
-    constructor(private repo: ReturnValueMatcherRepo, private propertyKey: PropertyKey) {
+    constructor(private repo: StubbedActionMatcherRepo, private propertyKey: PropertyKey) {
         this.never = new NeverVerifier(repo, propertyKey);
     }
 
@@ -38,7 +38,7 @@ export class Verifier {
 class NeverVerifier {
     private never: NeverVerifier;
 
-    constructor(private repo: ReturnValueMatcherRepo, private propertyKey: PropertyKey) {
+    constructor(private repo: StubbedActionMatcherRepo, private propertyKey: PropertyKey) {
         this.never = this;
     }
 

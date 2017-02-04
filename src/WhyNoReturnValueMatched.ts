@@ -1,9 +1,9 @@
-import ReturnValueMatcher from './ReturnValueMatcher';
+import StubbedActionMatcher from './StubbedActionMatcher';
 import ArgumentInvocation from "./ArgumentInvocation";
 
 
 export default class WhyNoReturnValueMatched {
-    constructor(private args: ArgumentInvocation, private returnValueMatchers: ReturnValueMatcher[], private propertyKey: PropertyKey) {
+    constructor(private args: ArgumentInvocation, private stubbedActionMatchers: StubbedActionMatcher[], private propertyKey: PropertyKey) {
     }
 
     reasonAndAdvice(): string {
@@ -17,12 +17,12 @@ export default class WhyNoReturnValueMatched {
     }
 
     private argsForExisitingReturnValues() {
-        return this.returnValueMatchers
+        return this.stubbedActionMatchers
             .map((arg)=> arg.printArgs())
             .join(' or ');
     }
 
     private wereReturnValuesSet(): boolean {
-        return this.returnValueMatchers.length !== 0;
+        return this.stubbedActionMatchers.length !== 0;
     }
 }

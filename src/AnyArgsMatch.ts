@@ -1,5 +1,5 @@
 import ArgumentInvocation from "./ArgumentInvocation";
-import {ArgumentInvocationMatcher} from "./ReturnValueMatcher";
+import {ArgumentInvocationMatcher} from "./StubbedActionMatcher";
 
 export default class AnyArgsMatch implements ArgumentInvocationMatcher {
     prettyPrint(): string {

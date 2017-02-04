@@ -1,7 +1,8 @@
 import WhyNoReturnValueMatched from "../src/WhyNoReturnValueMatched";
 import ArgumentInvocation from "../src/ArgumentInvocation";
-import ReturnValueMatcher from "../src/ReturnValueMatcher";
 import {expect}from 'chai';
+import StubbedActionMatcher from "../src/StubbedActionMatcher";
+import {ReturnValueAction} from "../src/StubbedActionMatcher";
 
 describe('WhyNoReturnValueMatched', () => {
 
@@ -10,7 +11,7 @@ describe('WhyNoReturnValueMatched', () => {
             const whyNoReturnValueMatched = new WhyNoReturnValueMatched(
                 new ArgumentInvocation([200]),
                 [
-                    new ReturnValueMatcher(new ArgumentInvocation([2]), "return value 2")
+                    StubbedActionMatcher.forArgs(new ArgumentInvocation([2]), ReturnValueAction.of("return value 2"))
                 ],
                 'property'
             );
@@ -29,8 +30,8 @@ describe('WhyNoReturnValueMatched', () => {
             const whyNoReturnValueMatched = new WhyNoReturnValueMatched(
                 new ArgumentInvocation([200]),
                 [
-                    new ReturnValueMatcher(new ArgumentInvocation([1]), "return value 1"),
-                    new ReturnValueMatcher(new ArgumentInvocation([2]), "return value 2")
+                    StubbedActionMatcher.forArgs(new ArgumentInvocation([1]), ReturnValueAction.of("return value 1")),
+                    StubbedActionMatcher.forArgs(new ArgumentInvocation([2]), ReturnValueAction.of("return value 2"))
                 ],
                 'property'
             );

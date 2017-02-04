@@ -4,6 +4,9 @@ import {whenInTests} from "./valueIfNoReturnValueSet";
 export interface ReturnSetter<T> {
     //noinspection ReservedWordAsName
     return(returnValue: T): void;
+
+    //noinspection ReservedWordAsName
+    throw(returnValue: any): void;
 }
 
 export interface verifier {

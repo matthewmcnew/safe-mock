@@ -1,10 +1,10 @@
 import {verifier} from "./SafeMock";
 import {valueIfNoReturnValueSet} from "./valueIfNoReturnValueSet";
 import ArgumentInvocation from "./ArgumentInvocation";
-import AnyArgsMatch from "./AnyArgsMatch";
-import _setReturnValueNoArgs from "./_setReturnValueNoArgsSymbol";
+import _setStubbedActionNoArgs from "./_setStubbedActionNoArgsSymbol";
 import {Verifier} from "./Verifier";
-import {ReturnValueMatcherRepo} from "./ReturnValueMatcherRepo";
+import StubbedActionMatcher, {StubbedAction} from "./StubbedActionMatcher";
+import {StubbedActionMatcherRepo} from "./StubbedActionMatcherRepo";
 
 export const verifyInTests: verifier = (mockToVerify: any): any => {
     return mockToVerify.verifier;
@@ -12,7 +12,7 @@ export const verifyInTests: verifier = (mockToVerify: any): any => {
 
 export class ProxyMock<T> implements ProxyHandler<T> {
 
-    private returnValueMatcherRepo: ReturnValueMatcherRepo = new ReturnValueMatcherRepo();
+    private stubbedActionMatcherRepo: StubbedActionMatcherRepo = new StubbedActionMatcherRepo();
 
     constructor() {
     }
@@ -20,21 +20,27 @@ export class ProxyMock<T> implements ProxyHandler<T> {
     get?(target: T, propertyKey: PropertyKey, receiver: any): any {
 
         const mockedFunc = (...argsToMatch: any[]) => {
-            const lookUpResult = this.returnValueMatcherRepo.recordAndFindMatch(propertyKey, new ArgumentInvocation(argsToMatch));
+            const lookUpResult = this.stubbedActionMatcherRepo.recordAndFindMatch(propertyKey, new ArgumentInvocation(argsToMatch));
 
             if (lookUpResult.returnFound)
-                return lookUpResult.returnValue;
+                return lookUpResult.performMockedReturnValue();
 
             return valueIfNoReturnValueSet(
                 lookUpResult.whyNoReturnValueMatched,
-                (returnValue: any) => this.returnValueMatcherRepo.setReturnValue(propertyKey, returnValue, new ArgumentInvocation(argsToMatch))
+
+                (stubbedAction: StubbedAction) =>
+                    this.stubbedActionMatcherRepo.setStubbedActionMatcher(propertyKey,
+                        StubbedActionMatcher.forArgs(new ArgumentInvocation(argsToMatch), stubbedAction)
+                    )
             );
         };
 
-        (mockedFunc as any).verifier = new Verifier(this.returnValueMatcherRepo, propertyKey);
+        (mockedFunc as any).verifier = new Verifier(this.stubbedActionMatcherRepo, propertyKey);
 
-        (mockedFunc as any)[_setReturnValueNoArgs] =
-            (returnValue: any) => this.returnValueMatcherRepo.setReturnValue(propertyKey, returnValue, new AnyArgsMatch());
+        (mockedFunc as any)[_setStubbedActionNoArgs] =
+            (stubbedAction: StubbedAction) => this.stubbedActionMatcherRepo.setStubbedActionMatcher(propertyKey,
+                StubbedActionMatcher.anyArgs(stubbedAction)
+            );
 
         return mockedFunc;
     }
