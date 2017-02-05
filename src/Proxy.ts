@@ -1,10 +1,10 @@
-import {verifier} from "./SafeMock";
 import {valueIfNoReturnValueSet} from "./valueIfNoReturnValueSet";
 import ArgumentInvocation from "./ArgumentInvocation";
 import _setStubbedActionNoArgs from "./_setStubbedActionNoArgsSymbol";
 import {Verifier} from "./Verifier";
 import StubbedActionMatcher, {StubbedAction} from "./StubbedActionMatcher";
 import {StubbedActionMatcherRepo} from "./StubbedActionMatcherRepo";
+import {verifier} from "../index";
 
 export const verifyInTests: verifier = (mockToVerify: any): any => {
     return mockToVerify.verifier;

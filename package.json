@@ -1,9 +1,9 @@
 {
   "name": "safe-mock",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "",
   "main": "src/SafeMock.js",
-  "typings": "src/SafeMock.d.ts",
+  "typings": "index.d.ts",
   "scripts": {
     "test": "mocha test --require ts-node/register test/**/*.ts && npm run build",
     "build": "tsc",

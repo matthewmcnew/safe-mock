@@ -1,12 +1,9 @@
-import {ReturnSetter, MockedThing} from './SafeMock';
 import WhyReturnValueDidntMatch from './WhyNoReturnValueMatched';
 import _setStubbedActionNoArgs from "./_setStubbedActionNoArgsSymbol";
 import {ReturnValueAction, ThrowingAction} from "./StubbedActionMatcher";
+import {WhenArgument, ReturnSetter} from "../index";
 
 const _setReturnValue = Symbol('_setReturnValue');
-
-type MockedFunction<T> = (...args: any[]) => T;
-type WhenArgument<T> = MockedThing<MockedFunction<T>> | T;
 
 export function whenInTests<T>(whenArg: WhenArgument<T>): ReturnSetter<T> {
     if ((<any>whenArg)[_setStubbedActionNoArgs]) {

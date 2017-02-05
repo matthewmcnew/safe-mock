@@ -1,5 +1,6 @@
 import {expect} from "chai";
-import SafeMock, {Mock, when, verify, MockedFunction} from "../src/SafeMock";
+import SafeMock, {when, verify} from "../src/SafeMock";
+import {Mock, MockFunction} from "../index";
 
 interface SomeService {
     createSomethingNoArgs(): string;
@@ -102,7 +103,7 @@ describe('SafeMock', () => {
             it("allows setting return args for mocked Methods", () => {
                 type FunctionToMock = () => string;
 
-                const mockedFunction: MockedFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("name");
+                const mockedFunction: MockFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("name");
 
                 when(mockedFunction()).return("Expected Return");
 
@@ -124,7 +125,7 @@ describe('SafeMock', () => {
             it("allows setting return args for mocked Methods with multiple args", () => {
                 type FunctionToMock = (arg: string, arg2: string) => string;
 
-                const mockedFunction: MockedFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("name");
+                const mockedFunction: MockFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("name");
 
                 when(mockedFunction("one", "two")).return("Expected Return");
 
@@ -134,7 +135,7 @@ describe('SafeMock', () => {
             it("does not return value if args do not match", () => {
                 type FunctionToMock = (arg: string, arg2: string) => string;
 
-                const mockedFunction: MockedFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("name");
+                const mockedFunction: MockFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("name");
 
                 when(mockedFunction("one", "two")).return("UnExpected Return");
 
@@ -315,7 +316,7 @@ describe('SafeMock', () => {
             type FunctionToMock = () => string;
 
             it("throws an exception if Not Called", () => {
-                const mockedFunction: MockedFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("nameOfFunc");
+                const mockedFunction: MockFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("nameOfFunc");
 
                 expect(() => {
                     verify(mockedFunction).called()
@@ -334,7 +335,7 @@ describe('SafeMock', () => {
             });
 
             it("does not throw an exception if it was Called", () => {
-                const mockedFunction: MockedFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("nameOfFunc");
+                const mockedFunction: MockFunction<FunctionToMock> = SafeMock.mockFunction<FunctionToMock>("nameOfFunc");
 
                 mockedFunction();
 
