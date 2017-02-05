@@ -16,7 +16,7 @@ npm install safe-mock
 Then import it in your tests:
 
 ```typescript
-import SafeMock, {when, verify} from "SafeMock";
+import SafeMock, {when, verify} from "safe-mock";
 
 ```
 
@@ -51,9 +51,9 @@ verify(mock.mockSomeService).calledWith("key");
 
 Mocks can be created from an interface, class, or function:
 
-##### Creating Mocks of interfaces:
+##### Creating Mocks of interfaces
 ```typescript
-import SafeMock, {Mock} from "SafeMock";
+import SafeMock, {Mock} from "safe-mock";
 
 interface SomeService {
     createSomething(argument: number): string;
@@ -66,9 +66,9 @@ const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 const mock = SafeMock.build<SomeService>();
 ```
 
-##### Creating Mocks of classes:
+##### Creating Mocks of classes
 ```typescript
-import SafeMock, {Mock} from "SafeMock";
+import SafeMock, {Mock} from "safe-mock";
 
 class SomeServiceClass {
     createSomething(argument: number) {
@@ -86,9 +86,9 @@ const mock: Mock<SomeServiceClass> = SafeMock.build<SomeServiceClass>();
 const mock = SafeMock.build<SomeService>();
 ```
 
-##### Creating Mocks of functions:
+##### Creating Mocks of functions
 ```typescript
-import SafeMock, {Mock} from "SafeMock";
+import SafeMock, {Mock} from "safe-mock";
 
 function someFunc() {
 } 
@@ -110,7 +110,7 @@ const mockFunction = SafeMock.mockFunction<FunctionToMock>("nameOfFunc");
 ##### Setting Return Values
 
 ```typescript
-import SafeMock, {Mock, when} from "SafeMock";
+import SafeMock, {Mock, when} from "safe-mock";
 
 interface SomeService {
     someMethod(argument: number, otherArg: string): string;
@@ -127,7 +127,7 @@ when(mock.someMethod).return("expectedReturn");
 ##### Making Mocks throw Exceptions
 
 ```typescript
-import SafeMock, {Mock, when} from "SafeMock";
+import SafeMock, {Mock, when} from "safe-mock";
 
 interface SomeService {
     someMethod(argument: number, otherArg: string): string;
@@ -141,11 +141,11 @@ when(mock.someMethod(123, "some arg")).throw(new Error("BRR! Its cold!"));
 when(mock.someMethod).throw(new Error("BRR! Its cold!")); 
 ```
 
-#### Verifying behavior with mocks:
+#### Verifying behavior with mocks
 
-##### Verify that the correct arguments were used:
+##### Verify that the correct arguments were used
 ```typescript
-import SafeMock, {verify} from "SafeMock";
+import SafeMock, {verify} from "safe-mock";
 
 interface SomeService {
     someMethod(argument: number, otherArg: string): string;
@@ -156,9 +156,9 @@ const mock = SafeMock.build<SomeService>();
 verify(mock.someMethod).calledWith(123, "someArg");
 ```
 
-##### Verify that mocks were never called
+##### Verify that mocks were never called.
 ```typescript
-import SafeMock, {verify} from "SafeMock";
+import SafeMock, {verify} from "safe-mock";
 
 interface SomeService {
     someMethod(argument: number): string;
@@ -169,9 +169,9 @@ const mock = SafeMock.build<SomeService>();
 verify(mock.someMethod).never.calledWith(123)
 ```
 
-##### Verify that a mock with no arguments was called.
+##### Verify that a mock with no arguments was called
 ```typescript
-import SafeMock, {verify} from "SafeMock";
+import SafeMock, {verify} from "safe-mock";
 
 interface SomeService {
     someMethod(): string;
@@ -184,7 +184,7 @@ verify(mock.someMethod).called()
 
 ##### Verify mock functions were called
 ```typescript
-import SafeMock, {verify} from "SafeMock";
+import SafeMock, {verify} from "safe-mock";
 
 function someFunction() {
 }
@@ -195,7 +195,7 @@ const mockFunction = SafeMock.mockFunction(someFunction);
 verify(mockFunction).called()
 ```
 
-## Rely On the Typescript Compiler to prevent mistakes. 
+## Rely On the Typescript Compiler to prevent mistakes 
 
 SafeMock won't let you return the wrong type from mocks.
 ```typescript
