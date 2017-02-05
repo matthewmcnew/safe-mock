@@ -175,6 +175,26 @@ verify(mock.someMethod).never.called();
 verify(mock.someMethod).never.calledWith(123);
 ```
 
+### Reset-ing mocks
+
+##### Use resetMock() to reset call information and mocked behavior
+```typescript
+import SafeMock, {verify} from "safe-mock";
+
+interface SomeService {
+    someMethod(argument: number, otherArg: string): string;
+    someOtherMethod(): string;
+}
+const mock = SafeMock.build<SomeService>();
+
+//use resetMock() to a reset all methods on a mock
+mock.resetMock()
+
+//use resetMock() on an individual method to only reset that method.
+mock.someOtherMethod.resetMock()
+```
+
+
 ### Use mock functions just like mocked methods.
 ```typescript
 import SafeMock, {verify, when} from "safe-mock";
@@ -187,6 +207,7 @@ const mockFunction = SafeMock.mockFunction(someFunction);
 
 when(mockFunction).return("return vlause");
 verify(mockFunction).called()
+someOtherMethod.resetMock();
 ```
 
 ## Rely On the Typescript Compiler to prevent mistakes 

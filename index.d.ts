@@ -82,15 +82,19 @@ export declare type MockFunction<T extends Function> = T & Mocked;
 
 export interface Mocked {
     mocked: true;
+    resetMock(): void
+}
+
+export declare type resetable = {
+    resetMock(): void
 }
 
 export declare type Mock<T> = {
     [P in keyof T]: SafeMockThing<T[P]>;
-    };
-
+} & resetable;
 
 export declare interface SafeMockConstructor {
-    build<T>(t?: {new(...args: any[]): T}): Mock<T>;
+    build<T>(t?: {new(...args: any[]): T}):  Mock<T>;
     mockFunction<T extends Function>(name?: string | T | undefined): MockFunction<T>;
 }
 

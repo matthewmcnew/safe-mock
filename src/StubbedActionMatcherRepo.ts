@@ -40,4 +40,9 @@ export class StubbedActionMatcherRepo {
 
         this.callMap[propertyKey].push(argsToMatch)
     }
+
+    resetPropertyKey(propertyKey: PropertyKey) {
+        this.stubbedActionMatcherMap[propertyKey] = [];
+        this.callMap[propertyKey] = [];
+    }
 }

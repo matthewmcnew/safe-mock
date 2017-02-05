@@ -606,4 +606,54 @@ describe('SafeMock', () => {
             expect(mock.method()).to.eq("123");
         });
     })
+
+    describe('resetMock()', () => {
+        it('allows whole mocks to be reset', ()=> {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            mock.createSomethingOneArg("differnent call");
+
+            mock.resetMock();
+
+            verify(mock.createSomethingOneArg).never.called();
+        });
+
+        it('allows mock methods call counts to be reset', ()=> {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            mock.createSomethingOneArg("ignore me call");
+            mock.createSomethingMultipleArgs("call", "call", "call");
+
+            mock.createSomethingOneArg.resetMock();
+
+            mock.createSomethingOneArg.resetMock();
+            verify(mock.createSomethingOneArg).never.called();
+            verify(mock.createSomethingMultipleArgs).called();
+        });
+
+        it('allows mock methods return values to be reset', ()=> {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            when(mock.createSomethingOneArg).return("this should be reset");
+
+            mock.createSomethingOneArg.resetMock();
+
+            expect(mock.createSomethingOneArg("")).not.to.eq("this should be reset");
+        });
+
+
+        it('allows mock mock functions to be reset', ()=> {
+            function hello() {
+
+            }
+
+            const mockFunction = SafeMock.mockFunction(hello);
+
+            mockFunction();
+
+            mockFunction.resetMock();
+
+            verify(mockFunction).never.called();
+        });
+    })
 });

@@ -19,6 +19,12 @@ export class ProxyMock<T> implements ProxyHandler<T> {
 
     get?(target: T, propertyKey: PropertyKey, receiver: any): any {
 
+        if (propertyKey === 'resetMock') {
+            return () => {
+                this.stubbedActionMatcherRepo = new StubbedActionMatcherRepo();
+            };
+        }
+
         const mockedFunc = (...argsToMatch: any[]) => {
             const lookUpResult = this.stubbedActionMatcherRepo.recordAndFindMatch(propertyKey, new ArgumentInvocation(argsToMatch));
 
@@ -36,6 +42,9 @@ export class ProxyMock<T> implements ProxyHandler<T> {
         };
 
         (mockedFunc as any).verifier = new Verifier(this.stubbedActionMatcherRepo, propertyKey);
+        (mockedFunc as any).resetMock = () => {
+            this.stubbedActionMatcherRepo.resetPropertyKey(propertyKey);
+        };
 
         (mockedFunc as any)[_setStubbedActionNoArgs] =
             (stubbedAction: StubbedAction) => this.stubbedActionMatcherRepo.setStubbedActionMatcher(propertyKey,
