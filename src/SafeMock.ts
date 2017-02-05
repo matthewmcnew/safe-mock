@@ -1,6 +1,5 @@
 import {ProxyMock, verifyInTests} from "./Proxy";
 import {whenInTests} from "./valueIfNoReturnValueSet";
-import {stringify} from "querystring";
 import {nameFunc} from "./functionNamer";
 
 export interface ReturnSetter<T> {

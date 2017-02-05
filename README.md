@@ -39,7 +39,7 @@ when(mockSomeService.mockSomeService("other")).return("otherGeneratedKey");
 
 ```
 
-Assert that mocks were used correctly with SafeMocks `verify`
+Assert that mocks were used correctly with SafeMock's `verify`
 
 ```typescript
 verify(mock.mockSomeService).calledWith("key");
@@ -49,7 +49,7 @@ verify(mock.mockSomeService).calledWith("key");
 ## The Details
 #### Creating Mocks
 
-Mocks can be created for an interface, class, or function:
+Mocks can be created from an interface, class, or function:
 
 ##### Creating Mocks of interfaces:
 ```typescript
@@ -225,7 +225,7 @@ mock.createSomethingNoArgs();
 verify(mock.createSomethingNoArgs).calledWith(123); 
 ```
 
-SafeMock won't let you verify the wrong number of argumentt
+SafeMock won't let you verify the wrong number of arguments.
 ```typescript
 interface SomeService {
     createSomethingNoArgs(): string;
@@ -239,7 +239,7 @@ mock.createSomethingNoArgs();
 verify(mock.createSomethingNoArgs).calledWith(123); 
 ```
 
-SafeMock won't let you verify non mocked methods:
+SafeMock won't let you verify non mocked methods.
 ```typescript
 const notAMock = {
     blah() {}
