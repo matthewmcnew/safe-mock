@@ -152,8 +152,12 @@ interface SomeService {
 }
 const mock = SafeMock.build<SomeService>();
 
-//use verify to check the arguments to a method
+//use verify.calledWith to check the exact arguments to a mocked method
 verify(mock.someMethod).calledWith(123, "someArg");
+
+
+//use verify.called() to check that a mock was called at least once
+verify(mock.someMethod).called();
 ```
 
 ##### Verify that mocks were never called.
@@ -165,8 +169,11 @@ interface SomeService {
 }
 const mock = SafeMock.build<SomeService>();
 
-//use verify to check the arguments to a method
-verify(mock.someMethod).never.calledWith(123)
+//use verify.never to check that a method was never called with any arguments.
+verify(mock.someMethod).never.called();
+
+//use verify.never.calledWith to check that a mock was never called with specific arguments
+verify(mock.someMethod).never.calledWith(123);
 ```
 
 ##### Verify that a mock with no arguments was called

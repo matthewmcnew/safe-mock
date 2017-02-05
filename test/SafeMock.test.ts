@@ -300,7 +300,7 @@ describe('SafeMock', () => {
 
                 expect(() => {
                     verify(mock.createSomethingNoArgs).called()
-                }).to.throw("createSomethingNoArgs was not called");
+                }).to.throw("createSomethingNoArgs was never called");
             });
 
             it("does not throw an exception if it was Called", () => {
@@ -320,7 +320,7 @@ describe('SafeMock', () => {
 
                 expect(() => {
                     verify(mockedFunction).called()
-                }).to.throw("nameOfFunc was not called");
+                }).to.throw("nameOfFunc was never called");
             });
 
             it("uses function name if available in exception", () => {
@@ -331,7 +331,7 @@ describe('SafeMock', () => {
 
                 expect(() => {
                     verify(mockedFunction).called()
-                }).to.throw("namedFunc was not called");
+                }).to.throw("namedFunc was never called");
             });
 
             it("does not throw an exception if it was Called", () => {
@@ -354,6 +354,18 @@ describe('SafeMock', () => {
                     expect(() => {
                         verify(mock.createSomethingOneArg).calledWith("ExpectedCall");
                     }).to.throw(`createSomethingOneArg was not called with: ("ExpectedCall")`);
+                });
+
+                it("allows checking that method was called", () => {
+                    const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                    expect(() => {
+                        verify(mock.createSomethingOneArg).called();
+                    }).to.throw;
+
+                    mock.createSomethingOneArg("Actual Call");
+
+                    verify(mock.createSomethingOneArg).called();
                 });
 
                 it("throws an exception with previous interactions", () => {
@@ -579,8 +591,9 @@ describe('SafeMock', () => {
     describe('building safe mock', () => {
         it('allows safe mock to be built from a class constructor', () => {
             class Blah {
-                constructor(constructorArg: number){
+                constructor(constructorArg: number) {
                 }
+
                 method() {
                     return ""
                 }
