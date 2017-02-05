@@ -149,7 +149,7 @@ describe('SafeMock', () => {
             });
         });
 
-        describe("making mocks throw", () =>{
+        describe("making mocks throw", () => {
             it("allows making mocks throw exceptions", () => {
                 const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
@@ -575,4 +575,22 @@ describe('SafeMock', () => {
             });
         })
     });
+
+    describe('building safe mock', () => {
+        it('allows safe mock to be built from a class constructor', () => {
+            class Blah {
+                constructor(constructorArg: number){
+                }
+                method() {
+                    return ""
+                }
+            }
+
+            const mock = SafeMock.build(Blah);
+
+            when(mock.method).return("123");
+
+            expect(mock.method()).to.eq("123");
+        });
+    })
 });
