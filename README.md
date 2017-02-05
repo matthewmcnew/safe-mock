@@ -49,7 +49,7 @@ verify(mock.mockSomeService).calledWith("key");
 ## The Details
 #### Creating Mocks
 
-Mocks can be created for an interface, class, or simple functions function:
+Mocks can be created for an interface, class, or function:
 
 ##### Creating Mocks of interfaces:
 ```typescript
@@ -197,8 +197,9 @@ const mockFunction = SafeMock.mockFunction(someFunction);
 verify(mockFunction).called()
 ```
 
-##### Rely On the Typescript Compiler to prevent mistakes. 
+## Rely On the Typescript Compiler to prevent mistakes. 
 
+SafeMock won't let you return the wrong type from mocks.
 ```typescript
 interface SomeService {
     createSomething(): string;
@@ -210,7 +211,21 @@ const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 when(mock.createSomething()).return(123); 
 ```
 
+SafeMock won't let you verify arguments of the wrong type.
+```typescript
+interface SomeService {
+    createSomethingWithAString(argument: string): string;
+}
 
+const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+mock.createSomethingNoArgs();
+
+//Won't compile, createSomething takes a string
+verify(mock.createSomethingNoArgs).calledWith(123); 
+```
+
+SafeMock won't let you verify the wrong number of argumentt
 ```typescript
 interface SomeService {
     createSomethingNoArgs(): string;
@@ -220,11 +235,11 @@ const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
 mock.createSomethingNoArgs();
 
-//Won't compile createSomething takes no args
+//Won't compile, createSomething takes no args
 verify(mock.createSomethingNoArgs).calledWith(123); 
 ```
 
-
+SafeMock won't let you verify non mocked methods:
 ```typescript
 const notAMock = {
     blah() {}
