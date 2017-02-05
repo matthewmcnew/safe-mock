@@ -93,14 +93,12 @@ import SafeMock, {Mock} from "SafeMock";
 function someFunc() {
 } 
 
-
 // Mock a function by passing it into the mockFunction method 
 const mockFunction = SafeMock.mockFunction(someFunc);
 
 // if you have a type signature for a function you can use generics to create a mockFunction
 type FunctionToMock = () => string;
 const mockFunction = SafeMock.mockFunction<FunctionToMock>();
-
 
 // you can pass a name into the mockFunction method to assist to make debugging easier
 type FunctionToMock = () => string;
