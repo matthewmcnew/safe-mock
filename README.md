@@ -190,7 +190,7 @@ const mock = SafeMock.build<SomeService>();
 //use resetMock() to a reset all methods on a mock
 mock.resetMock()
 
-//use resetMock() on an individual method to only reset that method.
+//use resetMock() on an individual method to only reset that method
 mock.someOtherMethod.resetMock()
 ```
 
