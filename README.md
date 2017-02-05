@@ -47,11 +47,11 @@ verify(mock.mockSomeService).calledWith("key");
 
 
 ## The Details
-#### Creating Mocks
+### Creating mocks
 
-Mocks can be created from an interface, class, or function:
+Mocks can be created from an interface, class, or functions.
 
-##### Creating Mocks of interfaces
+##### Creating mocks of interfaces
 ```typescript
 import SafeMock, {Mock} from "safe-mock";
 
@@ -59,10 +59,10 @@ interface SomeService {
     createSomething(argument: number): string;
 }
 
-// Mock an interface by passing the type of the mock as a generic to the build method  
+// mock an interface by passing the type of the mock as a generic to the build method  
 const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
-// Typescript will infer the type so you don't need to specify the type of the mock:
+// Typescript will infer the type so you don't need to specify the type of the mock
 const mock = SafeMock.build<SomeService>();
 ```
 
@@ -76,13 +76,13 @@ class SomeServiceClass {
     }
 }
 
-// Mock a class by passing the class into the build method
+// mock a class by passing the class into the build method
 const mock: Mock<SomeServiceClass> = SafeMock.build(SomeServiceClass);
 
-// Mock a class by passing the type of the mock as a generic to the build method  
+// mock a class by passing the type of the mock as a generic to the build method  
 const mock: Mock<SomeServiceClass> = SafeMock.build<SomeServiceClass>();
 
-// Typescript will infer the type so you don't need to specify the type of the mock:
+//Typescript will infer the type so you don't need to specify the type of the mock
 const mock = SafeMock.build<SomeService>();
 ```
 
@@ -100,13 +100,13 @@ const mockFunction = SafeMock.mockFunction(someFunc);
 type FunctionToMock = () => string;
 const mockFunction = SafeMock.mockFunction<FunctionToMock>();
 
-// you can pass a name into the mockFunction method to assist to make debugging easier
+// you can pass a name into the mockFunction method to make debugging easier
 type FunctionToMock = () => string;
 const mockFunction = SafeMock.mockFunction<FunctionToMock>("nameOfFunc");
 ```
 
 
-#### Specifying behavior for Mocks
+### Specifying behavior for mocks
 ##### Setting Return Values
 
 ```typescript
@@ -117,14 +117,14 @@ interface SomeService {
 }
 const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
-//specify return values only when mocks are called with certain arguments like this:
+// specify return values only when mocks are called with certain arguments like this
 when(mock.someMethod(123, "some arg")).return("expectedReturn"); 
 
-//If you don't care what arguments a mock receives you can specify a return value for all calls
+// if you don't care what arguments a mock receives you can specify a return value for all calls
 when(mock.someMethod).return("expectedReturn"); 
 ```
 
-##### Making Mocks throw Exceptions
+##### Making mocks throw Exceptions
 
 ```typescript
 import SafeMock, {Mock, when} from "safe-mock";
@@ -134,14 +134,14 @@ interface SomeService {
 }
 const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
-//specify thrown exceptions only when mocks are called with certain arguments like this:
+// specify thrown exceptions only when mocks are called with certain arguments like this
 when(mock.someMethod(123, "some arg")).throw(new Error("BRR! Its cold!")); 
 
-//If you don't care what arguments a mock receives you can specify a thrown exceptions for all calls:
+//if you don't care what arguments a mock receives you can specify a thrown exceptions for all calls
 when(mock.someMethod).throw(new Error("BRR! Its cold!")); 
 ```
 
-#### Verifying behavior with mocks
+### Verifying behavior with mocks
 
 ##### Verify that the correct arguments were used
 ```typescript
@@ -155,12 +155,11 @@ const mock = SafeMock.build<SomeService>();
 //use verify.calledWith to check the exact arguments to a mocked method
 verify(mock.someMethod).calledWith(123, "someArg");
 
-
 //use verify.called() to check that a mock was called at least once
 verify(mock.someMethod).called();
 ```
 
-##### Verify that mocks were never called.
+##### Verify that mocks were never called
 ```typescript
 import SafeMock, {verify} from "safe-mock";
 
@@ -176,29 +175,17 @@ verify(mock.someMethod).never.called();
 verify(mock.someMethod).never.calledWith(123);
 ```
 
-##### Verify that a mock with no arguments was called
+### Use mock functions just like mocked methods.
 ```typescript
-import SafeMock, {verify} from "safe-mock";
-
-interface SomeService {
-    someMethod(): string;
-}
-const mock = SafeMock.build<SomeService>();
-
-//use verify to assert that 
-verify(mock.someMethod).called()
-```
-
-##### Verify mock functions were called
-```typescript
-import SafeMock, {verify} from "safe-mock";
+import SafeMock, {verify, when} from "safe-mock";
 
 function someFunction() {
+    return "string"
 }
 
 const mockFunction = SafeMock.mockFunction(someFunction);
 
-//use verify just like mock methods on a mock object
+when(mockFunction).return("return vlause");
 verify(mockFunction).called()
 ```
 
