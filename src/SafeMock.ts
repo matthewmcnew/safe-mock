@@ -1,5 +1,7 @@
 import {ProxyMock, verifyInTests} from "./Proxy";
 import {whenInTests} from "./valueIfNoReturnValueSet";
+import {stringify} from "querystring";
+import {nameFunc} from "./functionNamer";
 
 export interface ReturnSetter<T> {
     //noinspection ReservedWordAsName
@@ -95,15 +97,16 @@ export type Mock<T> = {
 export type MockedFunction<T extends Function> = T & Mocked;
 
 export const SafeMock = {
-    build<T>(): Mock<T> {
+    build<T>(t?: T): Mock<T> {
         const mock: T = {} as any;
         let proxyMock: ProxyHandler<T> = new ProxyMock<T>();
         return new Proxy((mock as any), (proxyMock as any));
     },
 
-    mockFunction<T extends Function>(name: string): MockedFunction<T> {
+    mockFunction<T extends Function>(name?: T | string): MockedFunction<T> {
         let proxyMock: ProxyHandler<{}> = new ProxyMock<{}>();
-        return proxyMock.get!({}, name, null);
+
+        return proxyMock.get!({}, nameFunc(name), null);
     }
 };
 

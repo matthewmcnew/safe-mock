@@ -109,6 +109,18 @@ describe('SafeMock', () => {
                 expect(mockedFunction()).to.equal("Expected Return");
             });
 
+            it("allows functions to be mocked by passing them into the mockFunction method", () => {
+                function functionToMock(someStringArg: string) {
+                    return 123;
+                }
+
+                const mockedFunction = SafeMock.mockFunction(functionToMock);
+
+                when(mockedFunction("blah")).return(10);
+
+                expect(mockedFunction("blah")).to.equal(10);
+            });
+
             it("allows setting return args for mocked Methods with multiple args", () => {
                 type FunctionToMock = (arg: string, arg2: string) => string;
 
@@ -308,6 +320,17 @@ describe('SafeMock', () => {
                 expect(() => {
                     verify(mockedFunction).called()
                 }).to.throw("nameOfFunc was not called");
+            });
+
+            it("uses function name if available in exception", () => {
+                function namedFunc() {
+                }
+
+                const mockedFunction = SafeMock.mockFunction(namedFunc);
+
+                expect(() => {
+                    verify(mockedFunction).called()
+                }).to.throw("namedFunc was not called");
             });
 
             it("does not throw an exception if it was Called", () => {
