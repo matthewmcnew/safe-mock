@@ -1,9 +1,9 @@
 Safe Mock [![Build Status](https://travis-ci.org/matthewmcnew/safe-mock.svg?branch=master)](https://travis-ci.org/matthewmcnew/safe-mock)
 ===================
 
-Safe Mock is a library for typescript (or Javascript) that allows mocks to be created of typescript interfaces or classes and utilized with a simple typesafe syntax.
+Safe Mock is a library for Typescript (or Javascript) that allows mocks to be created from typescript interfaces or classes and utilized with simple typesafe syntax.
 
-The syntax is inspired by Mockito:
+The syntax is inspired by Mockito.
 
 Check out the examples below to get started:
 
@@ -46,6 +46,7 @@ verify(mock.mockSomeService).calledWith("key");
 ```
 
 
+## The Details
 #### Creating Mocks
 
 Mocks can be created for an interface, class, or simple functions function:
