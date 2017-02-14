@@ -44,7 +44,10 @@ Assert that mocks were used correctly with SafeMock's `verify`
 ```typescript
 verify(mock.mockSomeService).calledWith("key");
 ```
-
+### Gotchas
+* SafeMock requires TypeScript 2.1 or later.
+* SafeMock requires a Javascript runtime with support for the [proxy object](http://caniuse.com/#feat=proxy).
+* If running on Node.js version 6+ is required.
 
 ## The Details
 ### Creating mocks
