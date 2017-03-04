@@ -1,9 +1,19 @@
 export declare type WhenArgument<T> = SafeMockThing<(...args: any[]) => T> | T;
-export declare function when<T>(whenArg: WhenArgument<T>): ReturnSetter<T>;
+
+export declare interface when {
+    <T>(promiseWhenArg: WhenArgument<Promise<T>>): PromiseReturnSetter<T>;
+
+    <T>(whenArg: WhenArgument<T>): ReturnSetter<T>;
+}
 
 export interface ReturnSetter<T> {
     return(returnValue: T): void;
     throw(returnValue: any): void;
+}
+
+export interface PromiseReturnSetter<T> extends ReturnSetter<Promise<T>> {
+    resolve(rejection: T): void;
+    reject(rejection: any): void;
 }
 
 export declare interface verifier {
@@ -91,10 +101,10 @@ export declare type resetable = {
 
 export declare type Mock<T> = {
     [P in keyof T]: SafeMockThing<T[P]>;
-} & resetable;
+    } & resetable;
 
 export declare interface SafeMockConstructor {
-    build<T>(t?: {new(...args: any[]): T}):  Mock<T>;
+    build<T>(t?: {new(...args: any[]): T}): Mock<T>;
     mockFunction<T extends Function>(name?: string | T | undefined): MockFunction<T>;
 }
 

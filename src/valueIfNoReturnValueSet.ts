@@ -1,39 +1,46 @@
-import WhyReturnValueDidntMatch from './WhyNoReturnValueMatched';
+import WhyReturnValueDidntMatch from "./WhyNoReturnValueMatched";
 import _setStubbedActionNoArgs from "./_setStubbedActionNoArgsSymbol";
-import {ReturnValueAction, ThrowingAction} from "./StubbedActionMatcher";
-import {WhenArgument, ReturnSetter} from "../index";
+import {
+    ReturnValueAction, ThrowingAction, RejectedPromiseAction, StubbedAction,
+    ResolvedPromiseAction
+} from "./StubbedActionMatcher";
+import {when, PromiseReturnSetter} from "../index";
 
 const _setReturnValue = Symbol('_setReturnValue');
 
-export function whenInTests<T>(whenArg: WhenArgument<T>): ReturnSetter<T> {
-    if ((<any>whenArg)[_setStubbedActionNoArgs]) {
-        //noinspection ReservedWordAsName
-        return {
-            return(returnValue: T): void {
-                (<any>whenArg)[_setStubbedActionNoArgs](ReturnValueAction.of(returnValue));
-            },
-
-            throw(valueToThrow: any): void {
-                (<any>whenArg)[_setStubbedActionNoArgs](ThrowingAction.of(valueToThrow));
-            }
-        };
+export const whenInTests: when = <T>(whenArg: any): PromiseReturnSetter<T> => {
+    if (whenArg[_setStubbedActionNoArgs]) {
+        return new SafeMockReturnSetter(whenArg[_setStubbedActionNoArgs]);
     }
 
-    if((whenArg as any)[_setReturnValue] === undefined){
+    if (whenArg[_setReturnValue] === undefined) {
         throw new Error("Whoops! Looks like you called `when` incorrectly. Make sure you create a Mock First!")
     }
 
-    //noinspection ReservedWordAsName
-    return {
-        return(returnValue: T): void {
-            (whenArg as any)[_setReturnValue](ReturnValueAction.of(returnValue));
-        },
+    return new SafeMockReturnSetter(whenArg[_setReturnValue]);
+};
 
-        throw(valueToThrow: any): void {
-            (whenArg as any)[_setReturnValue](ThrowingAction.of(valueToThrow));
-        }
-    };
+class SafeMockReturnSetter<T> implements PromiseReturnSetter<T> {
+    constructor(private stubbedActionSetter: (stubbedAction: StubbedAction) => void) {
+    }
+
+    resolve(resolvedValue: any): void {
+        this.stubbedActionSetter(ResolvedPromiseAction.of(resolvedValue));
+    }
+
+    reject(rejection: any): void {
+        this.stubbedActionSetter(RejectedPromiseAction.of(rejection));
+    }
+
+    return(returnValue: any): void {
+        this.stubbedActionSetter(ReturnValueAction.of(returnValue));
+    }
+
+    throw(valueToThrow: any): void {
+        this.stubbedActionSetter(ThrowingAction.of(valueToThrow));
+    }
 }
+
 
 export function valueIfNoReturnValueSet(whyNoMatch: WhyReturnValueDidntMatch, futureReturnValueSetter: (returnValue: any) => void) {
 

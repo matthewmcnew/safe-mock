@@ -194,6 +194,41 @@ describe('SafeMock', () => {
 
         });
 
+        describe("setting promise return values", () => {
+            it("allows setting promise rejections directly", () => {
+                interface PromiseSomeService {
+                    someMethodThatReturnsAPromise(): Promise<void>;
+                }
+
+                const mock: Mock<PromiseSomeService> = SafeMock.build<PromiseSomeService>();
+
+                when(mock.someMethodThatReturnsAPromise()).reject(new Error("Ah Geez!"));
+
+                return mock.someMethodThatReturnsAPromise()
+                    .then(
+                        () => expect.fail('Promise Should not resolve'),
+                        (err) => expect(err).to.eql(new Error("Ah Geez!")),
+                    )
+            });
+
+            it("allows setting promise resolved directly", () => {
+                interface PromiseSomeService {
+                    someMethodThatReturnsAPromise(): Promise<string>;
+                }
+
+                const mock: Mock<PromiseSomeService> = SafeMock.build<PromiseSomeService>();
+
+                when(mock.someMethodThatReturnsAPromise()).resolve("Value to resolve");
+
+                return mock.someMethodThatReturnsAPromise()
+                    .then(
+                        (resolvedValue) => {
+                            expect(resolvedValue).to.eql("Value to resolve")
+                        }
+                    )
+            });
+        });
+
         describe("No Return Value Set", () => {
 
             it("returns object from mock that throws exception if anyone tries to get a field or a method on it", () => {
@@ -608,7 +643,7 @@ describe('SafeMock', () => {
     })
 
     describe('resetMock()', () => {
-        it('allows whole mocks to be reset', ()=> {
+        it('allows whole mocks to be reset', () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             mock.createSomethingOneArg("differnent call");
@@ -618,7 +653,7 @@ describe('SafeMock', () => {
             verify(mock.createSomethingOneArg).never.called();
         });
 
-        it('allows mock methods call counts to be reset', ()=> {
+        it('allows mock methods call counts to be reset', () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             mock.createSomethingOneArg("ignore me call");
@@ -631,7 +666,7 @@ describe('SafeMock', () => {
             verify(mock.createSomethingMultipleArgs).called();
         });
 
-        it('allows mock methods return values to be reset', ()=> {
+        it('allows mock methods return values to be reset', () => {
             const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
             when(mock.createSomethingOneArg).return("this should be reset");
@@ -642,7 +677,7 @@ describe('SafeMock', () => {
         });
 
 
-        it('allows mock mock functions to be reset', ()=> {
+        it('allows mock mock functions to be reset', () => {
             function hello() {
 
             }

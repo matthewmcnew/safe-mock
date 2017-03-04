@@ -36,6 +36,36 @@ export class ThrowingAction implements StubbedAction {
     }
 }
 
+export class RejectedPromiseAction implements StubbedAction {
+
+    constructor(private valueToReject: any) {
+    }
+
+    performMockedReturnValue(): any {
+        return Promise.reject(this.valueToReject);
+    }
+
+
+    static of(valueToReject: any) {
+        return new RejectedPromiseAction(valueToReject);
+    }
+}
+
+export class ResolvedPromiseAction implements StubbedAction {
+
+    constructor(private valueToResolve: any) {
+    }
+
+    performMockedReturnValue(): any {
+        return Promise.resolve(this.valueToResolve);
+    }
+
+
+    static of(valueToResolve: any) {
+        return new ResolvedPromiseAction(valueToResolve);
+    }
+}
+
 
 export interface StubbedAction {
     performMockedReturnValue(): any
