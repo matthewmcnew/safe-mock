@@ -144,6 +144,28 @@ when(mock.someMethod(123, "some arg")).throw(new Error("BRR! Its cold!"));
 when(mock.someMethod).throw(new Error("BRR! Its cold!")); 
 ```
 
+##### Working with mocks that return a Promise 
+
+```typescript
+import SafeMock, {Mock, when} from "safe-mock";
+
+interface SomeService {
+    someMethod(argument: number): Promise<string>;
+}
+const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+// specify that the mock returns rejected promises with a rejected value with reject
+when(mock.someMethod(123)).reject(new Error("BRR! Its cold!"));
+
+mock.someMethod(123); //returns Promise.reject(new Error("BRR! Its cold!"));
+
+// specify that the mock returns resolved promises with resolve
+when(mock.someMethod(124)).resolve("Hooray! You passed in 124"); 
+
+mock.someMethod(124); //returns Promise.resolve("Hooray! You passed in 124");
+```
+Note: resolve() and reject() are only available on mocks that return a Promise.
+
 ### Verifying behavior with mocks
 
 ##### Verify that the correct arguments were used
