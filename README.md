@@ -1,5 +1,7 @@
-Safe Mock [![Build Status](https://travis-ci.org/matthewmcnew/safe-mock.svg?branch=master)](https://travis-ci.org/matthewmcnew/safe-mock)
-===================
+# Safe Mock
+
+[![Build Status](https://travis-ci.org/matthewmcnew/safe-mock.svg?branch=master)](https://travis-ci.org/matthewmcnew/safe-mock)
+[![Chat](https://img.shields.io/badge/help-gitter-eb9348.svg?style=flat)](https://gitter.im/Safe-Mock)
 
 Safe Mock is a library for Typescript (or Javascript) that allows mocks to be created from typescript interfaces or classes and utilized with simple typesafe syntax.
 

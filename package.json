@@ -1,7 +1,14 @@
 {
   "name": "safe-mock",
-  "version": "0.2.0",
-  "description": "",
+  "version": "0.2.6",
+  "description": "Type Safe Mocking Library written for Typescript and Javascript",
+  "tags": [
+    "mock",
+    "mocking",
+    "unittesting",
+    "testing",
+    "typescript"
+  ],
   "main": "src/SafeMock.js",
   "typings": "index.d.ts",
   "scripts": {
