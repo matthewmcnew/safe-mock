@@ -5,7 +5,7 @@ import {Mock, MockFunction, SafeMockConstructor} from "../index";
 
 export const SafeMock: SafeMockConstructor = {
     build<T>(t?: {new(...args: any[]): T} | undefined): Mock<T> {
-        const mock: T = {} as any;
+        const mock: T = (() => {}) as any;
         let proxyMock: ProxyHandler<T> = new ProxyMock<T>();
         return new Proxy((mock as any), (proxyMock as any));
     },

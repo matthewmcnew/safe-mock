@@ -9,10 +9,10 @@ export default class WhyNoReturnValueMatched {
     reasonAndAdvice(): string {
         if (this.wereReturnValuesSet()) {
             let stubbedArgs = this.argsForExisitingReturnValues();
-            return `${this.propertyKey} was stubbed to return a value when called with ${stubbedArgs} but was called with: ${this.args.prettyPrint()}`
+            return `${this.propertyKey.toString()} was stubbed to return a value when called with ${stubbedArgs} but was called with: ${this.args.prettyPrint()}`
         }
 
-        return `${this.propertyKey} has not been mocked yet. Set a mock return value for it.`
+        return `${this.propertyKey.toString()} has not been mocked yet. Set a mock return value for it.`
 
     }
 

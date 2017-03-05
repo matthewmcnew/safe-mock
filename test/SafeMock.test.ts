@@ -19,7 +19,7 @@ class Complex {
 describe('SafeMock', () => {
     describe("return values from mocks", () => {
 
-        describe("setting return values via DSL", () => {
+        describe("setting return values", () => {
             it("allows setting return args for no arg mockedMethods", () => {
                 const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
@@ -108,6 +108,34 @@ describe('SafeMock', () => {
                 when(mockedFunction()).return("Expected Return");
 
                 expect(mockedFunction()).to.equal("Expected Return");
+            });
+
+            it("allows setting return args for callable interfaces", () => {
+                interface CallableInterface {
+                    (): string;
+                }
+
+                const mock = SafeMock.build<CallableInterface>();
+
+                expect(() => mock().length).to.throw('has not been mocked yet');
+
+                when(mock).return("Expected Return");
+
+                expect(mock()).to.equal("Expected Return");
+            });
+
+            it("allows setting return args for callable interfaces with arguments", () => {
+                interface CallableInterface {
+                    (a: string): string;
+                }
+
+                const mock = SafeMock.build<CallableInterface>();
+
+                expect(() => mock("hello").length).to.throw('has not been mocked yet')
+
+                when(mock("hello")).return("Expected Return");
+
+                expect(mock("hello")).to.equal("Expected Return");
             });
 
             it("allows functions to be mocked by passing them into the mockFunction method", () => {

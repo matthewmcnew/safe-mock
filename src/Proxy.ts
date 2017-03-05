@@ -5,10 +5,13 @@ import {Verifier} from "./Verifier";
 import StubbedActionMatcher, {StubbedAction} from "./StubbedActionMatcher";
 import {StubbedActionMatcherRepo} from "./StubbedActionMatcherRepo";
 import {verifier} from "../index";
+import setStubbedActionNoArgsMatcher from "./_setStubbedActionNoArgsSymbol";
 
 export const verifyInTests: verifier = (mockToVerify: any): any => {
     return mockToVerify.verifier;
 };
+
+const callableMock = Symbol('CallableMock');
 
 export class ProxyMock<T> implements ProxyHandler<T> {
 
@@ -17,14 +20,26 @@ export class ProxyMock<T> implements ProxyHandler<T> {
     constructor() {
     }
 
-    get?(target: T, propertyKey: PropertyKey, receiver: any): any {
-
+    get(target: T, propertyKey: PropertyKey, receiver: any): any {
         if (propertyKey === 'resetMock') {
             return () => {
                 this.stubbedActionMatcherRepo = new StubbedActionMatcherRepo();
             };
+        } else if (propertyKey === setStubbedActionNoArgsMatcher) {
+            return (stubbedAction: StubbedAction) =>
+                this.stubbedActionMatcherRepo.setStubbedActionMatcher(callableMock,
+                    StubbedActionMatcher.anyArgs(stubbedAction)
+                );
         }
 
+        return this.buildMockedMethod(propertyKey);
+    }
+
+    apply(target: T, thisArg: any, argArray?: any): any {
+        return this.buildMockedMethod(callableMock)(...argArray);
+    }
+
+    private buildMockedMethod(propertyKey: PropertyKey) {
         const mockedFunc = (...argsToMatch: any[]) => {
             const lookUpResult = this.stubbedActionMatcherRepo.recordAndFindMatch(propertyKey, new ArgumentInvocation(argsToMatch));
 
