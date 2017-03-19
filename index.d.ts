@@ -1,6 +1,6 @@
 export declare type WhenArgument<T> = SafeMockThing<(...args: any[]) => T> | T;
 
-export declare interface when {
+export declare interface When {
     <T>(promiseWhenArg: WhenArgument<Promise<T>>): PromiseReturnSetter<T>;
 
     <T>(whenArg: WhenArgument<T>): ReturnSetter<T>;
@@ -29,8 +29,6 @@ export declare interface verifier {
     <T, K, L, J, A, B, C, D, E, F>(thing: SafeMockThing<(k: K, l: L, j: J, a: A, b: B, c: C, d: D, e: E, f: F) => T>): CallVerifier9<K, L, J, A, B, C, D, E, F>;
     <T, K, L, J, A, B, C, D, E, F, X>(thing: SafeMockThing<(k: K, l: L, j: J, a: A, b: B, c: C, d: D, e: E, f: F, x: X) => T>): CallVerifier10<K, L, J, A, B, C, D, E, F, X>;
 }
-
-export declare const verify: verifier;
 
 export interface CallVerifierNoArgs {
     called(): void;
@@ -113,6 +111,7 @@ export declare interface SafeMockConstructor {
     mockFunction<T extends Function>(name?: string | T | undefined): MockFunction<T>;
 }
 
+export declare const when: When;
+export declare const verify: verifier;
 export declare const SafeMock: SafeMockConstructor;
-
 export default SafeMock;

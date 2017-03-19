@@ -4,11 +4,11 @@ import {
     ReturnValueAction, ThrowingAction, RejectedPromiseAction, StubbedAction,
     ResolvedPromiseAction
 } from "./StubbedActionMatcher";
-import {when, PromiseReturnSetter} from "../index";
+import {PromiseReturnSetter, When} from "../index";
 
 const _setReturnValue = Symbol('_setReturnValue');
 
-export const whenInTests: when = <T>(whenArg: any): PromiseReturnSetter<T> => {
+export const whenInTests: When = <T>(whenArg: any): PromiseReturnSetter<T> => {
     if (whenArg[_setStubbedActionNoArgs]) {
         return new SafeMockReturnSetter(whenArg[_setStubbedActionNoArgs]);
     }
