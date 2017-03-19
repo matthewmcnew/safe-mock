@@ -1,8 +1,15 @@
 {
   "name": "safe-mock",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Type Safe Mocking Library written for Typescript and Javascript",
   "homepage": "https://github.com/matthewmcnew/safe-mock",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matthewmcnew/safe-mock"
+  },
+  "bugs": {
+    "url": "https://github.com/matthewmcnew/safe-mock/issues"
+  },
   "keywords": [
     "mock",
     "mocking",
