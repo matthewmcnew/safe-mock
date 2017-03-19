@@ -1,8 +1,9 @@
 {
   "name": "safe-mock",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Type Safe Mocking Library written for Typescript and Javascript",
-  "tags": [
+  "homepage": "https://github.com/matthewmcnew/safe-mock",
+  "keywords": [
     "mock",
     "mocking",
     "unittesting",
@@ -16,8 +17,8 @@
     "build": "tsc",
     "prepublish": "tsc"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Matthew McNew",
+  "license": "MIT",
   "devDependencies": {
     "@types/chai": "^3.4.34",
     "@types/mocha": "^2.2.36",
