@@ -1,5 +1,5 @@
-import ArgumentInvocation from "../src/ArgumentInvocation";
-import {expect} from "chai";
+import ArgumentInvocation from '../src/ArgumentInvocation';
+import {expect} from 'chai';
 
 class SomeClass {
     //noinspection JSUnusedGlobalSymbols
@@ -96,6 +96,25 @@ describe('ArgumentInvocation', () => {
 
             expect(argWithPropertyAsClass.equivalentTo(new ArgumentInvocation([Symbol()]))).to.be.false;
             expect(argWithPropertyAsClass.equivalentTo(new ArgumentInvocation([symbol]))).to.be.true;
+        });
+
+        it('supports empty arrays', () => {
+            expect(new ArgumentInvocation([[]]).equivalentTo(new ArgumentInvocation([[]]))).to.be.true;
+        });
+
+        it('supports number', () => {
+            expect(new ArgumentInvocation([7]).equivalentTo(new ArgumentInvocation([8]))).to.be.false;
+            expect(new ArgumentInvocation([7]).equivalentTo(new ArgumentInvocation([7]))).to.be.true;
+        });
+
+        it('supports boolean', () => {
+            expect(new ArgumentInvocation([false]).equivalentTo(new ArgumentInvocation([true]))).to.be.false;
+            expect(new ArgumentInvocation([false]).equivalentTo(new ArgumentInvocation([false]))).to.be.true;
+        });
+
+        it('supports boolean', () => {
+            expect(new ArgumentInvocation([false]).equivalentTo(new ArgumentInvocation([true]))).to.be.false;
+            expect(new ArgumentInvocation([false]).equivalentTo(new ArgumentInvocation([false]))).to.be.true;
         });
     });
 });

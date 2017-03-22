@@ -53,8 +53,9 @@ export default class ArgumentInvocation implements ArgumentInvocationMatcher {
             return true;
 
         for (let argIndex in this.args) {
-            if (ArgumentInvocation.equalArg(this.args[argIndex], expectedCall.args[argIndex]) === false)
+            if (ArgumentInvocation.equalArg(this.args[argIndex], expectedCall.args[argIndex]) === false){
                 return false;
+            }
         }
 
         return true;
@@ -80,9 +81,8 @@ export default class ArgumentInvocation implements ArgumentInvocationMatcher {
 
         const keys = [...Object.keys(arg1), ...Object.keys(arg2)];
 
-        if (typeof arg1 === "string" || keys.length === 0) {
-            return arg1 === arg2;
-        }
+        if(typeof arg1 === "string"|| typeof arg1 === "boolean" || typeof arg1 === "symbol" || typeof arg1 === "number")
+            return arg1 == arg2;
 
         for (let keyIndex in keys) {
             if (ArgumentInvocation.equalArg(arg1[keys[keyIndex]], arg2[keys[keyIndex]]) === false) {
