@@ -36,11 +36,6 @@ export default class ArgumentInvocation implements ArgumentInvocationMatcher {
     constructor(private args: any[]) {
     }
 
-
-    public get length(): number {
-        return this.args.length;
-    }
-
     prettyPrint(): string {
         return prettyPrint(this.args);
     }
