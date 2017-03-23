@@ -32,8 +32,7 @@ function prettyPrint(expectedCall: any[]): string {
 }
 
 export default class ArgumentInvocation implements ArgumentInvocationMatcher {
-
-    constructor(private args: any[]) {
+    constructor(public readonly args: any[]) {
     }
 
     prettyPrint(): string {

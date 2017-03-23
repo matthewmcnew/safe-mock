@@ -32,6 +32,14 @@ describe('CallsDontMatchError', () => {
 
             expect(message).not.to.contain(`Other interactions with this mock:`);
         });
+
+        it("allows diff to be viewed", () => {
+            const error = new CallsDontMatchError(new ArgumentInvocation([new IWantToBePrettyPrinted("hello"), 1, "stringsStayTheSame"]), [new ArgumentInvocation(["actual Call"]),], 'method');
+
+            expect(error.showDiff).to.be.true;
+            expect(error.expected).to.eql([new IWantToBePrettyPrinted("hello"), 1, "stringsStayTheSame"]);
+            expect(error.actual).to.eql([["actual Call"]]);
+        });
     });
 });
 
