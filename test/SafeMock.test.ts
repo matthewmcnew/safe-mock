@@ -175,6 +175,15 @@ describe('SafeMock', () => {
                     when("this is no good").return("holla")
                 }).to.throw("Whoops! Looks like you called `when` incorrectly. Make sure you create a Mock First!");
             });
+
+            it("allows generic return values to be overridden", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                when(mock.createSomethingOneArg).return("original coke");
+                when(mock.createSomethingOneArg).return("new coke");
+
+                expect(mock.createSomethingOneArg("not used")).to.equal("new coke");
+            });
         });
 
         describe("making mocks throw", () => {
