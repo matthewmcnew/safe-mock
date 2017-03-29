@@ -11,12 +11,13 @@ export class StubbedActionMatcherRepo {
         this.recordCall(propertyKey, argsToMatch);
         const stubbedActionMatchers = this.stubbedActionMatcherMap[propertyKey] || [];
 
-        const [firstMatchedMatcher] =
+        const [lastMatchedMatcher] =
             stubbedActionMatchers
-                .filter((matcher: StubbedActionMatcher) => matcher.match(argsToMatch));
+                .filter((matcher: StubbedActionMatcher) => matcher.match(argsToMatch))
+                .reverse();
 
-        if (firstMatchedMatcher) {
-            return LookupResult.returnValueFound(firstMatchedMatcher);
+        if (lastMatchedMatcher) {
+            return LookupResult.returnValueFound(lastMatchedMatcher);
         } else {
             return LookupResult.noReturnValueMatched(
                 new WhyNoReturnValueMatched(argsToMatch, stubbedActionMatchers, propertyKey)
