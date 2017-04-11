@@ -131,7 +131,7 @@ describe('SafeMock', () => {
 
                 const mock = SafeMock.build<CallableInterface>();
 
-                expect(() => mock("hello").length).to.throw('has not been mocked yet')
+                expect(() => mock("hello").length).to.throw('has not been mocked yet');
 
                 when(mock("hello")).return("Expected Return");
 
@@ -428,6 +428,16 @@ describe('SafeMock', () => {
                     }).to.throw(`createSomethingOneArg was not called with: ("ExpectedCall")`);
                 });
 
+                it("does not count invocations from setting return values", () => {
+                    const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                    when(mock.createSomethingOneArg("NotARealCall")).return("hi");
+
+                    expect(() => {
+                        verify(mock.createSomethingOneArg).calledWith("NotARealCall");
+                    }).to.throw(`createSomethingOneArg was not called with: ("NotARealCall")`);
+                });
+
                 it("allows checking that method was called", () => {
                     const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
@@ -677,7 +687,7 @@ describe('SafeMock', () => {
 
             expect(mock.method()).to.eq("123");
         });
-    })
+    });
 
     describe('resetMock()', () => {
         it('allows whole mocks to be reset', () => {

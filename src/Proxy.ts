@@ -2,7 +2,7 @@ import {valueIfNoReturnValueSet} from "./valueIfNoReturnValueSet";
 import ArgumentInvocation from "./ArgumentInvocation";
 import _setStubbedActionNoArgs from "./_setStubbedActionNoArgsSymbol";
 import {Verifier} from "./Verifier";
-import StubbedActionMatcher, {StubbedAction} from "./StubbedActionMatcher";
+import {StubbedAction} from "./StubbedActionMatcher";
 import {StubbedActionMatcherRepo} from "./StubbedActionMatcherRepo";
 import {verifier} from "../index";
 import setStubbedActionNoArgsMatcher from "./_setStubbedActionNoArgsSymbol";
@@ -27,8 +27,9 @@ export class ProxyMock<T> implements ProxyHandler<T> {
             };
         } else if (propertyKey === setStubbedActionNoArgsMatcher) {
             return (stubbedAction: StubbedAction) =>
-                this.stubbedActionMatcherRepo.setStubbedActionMatcher(callableMock,
-                    StubbedActionMatcher.anyArgs(stubbedAction)
+                this.stubbedActionMatcherRepo.setStubbedActionForAnyArgs(
+                    callableMock,
+                    stubbedAction
                 );
         }
 
@@ -41,7 +42,8 @@ export class ProxyMock<T> implements ProxyHandler<T> {
 
     private buildMockedMethod(propertyKey: PropertyKey) {
         const mockedFunc = (...argsToMatch: any[]) => {
-            const lookUpResult = this.stubbedActionMatcherRepo.recordAndFindMatch(propertyKey, new ArgumentInvocation(argsToMatch));
+            const lookUpResult = this.stubbedActionMatcherRepo
+                .recordAndFindMatch(propertyKey, new ArgumentInvocation(argsToMatch));
 
             if (lookUpResult.returnFound)
                 return lookUpResult.performMockedReturnValue();
@@ -50,8 +52,10 @@ export class ProxyMock<T> implements ProxyHandler<T> {
                 lookUpResult.whyNoReturnValueMatched,
 
                 (stubbedAction: StubbedAction) =>
-                    this.stubbedActionMatcherRepo.setStubbedActionMatcher(propertyKey,
-                        StubbedActionMatcher.forArgs(new ArgumentInvocation(argsToMatch), stubbedAction)
+                    this.stubbedActionMatcherRepo.setStubbedActionForArgs(
+                        propertyKey,
+                        new ArgumentInvocation(argsToMatch),
+                        stubbedAction
                     )
             );
         };
@@ -62,9 +66,11 @@ export class ProxyMock<T> implements ProxyHandler<T> {
         };
 
         (mockedFunc as any)[_setStubbedActionNoArgs] =
-            (stubbedAction: StubbedAction) => this.stubbedActionMatcherRepo.setStubbedActionMatcher(propertyKey,
-                StubbedActionMatcher.anyArgs(stubbedAction)
-            );
+            (stubbedAction: StubbedAction) =>
+                this.stubbedActionMatcherRepo.setStubbedActionForAnyArgs(
+                    propertyKey,
+                    stubbedAction
+                );
 
         return mockedFunc;
     }

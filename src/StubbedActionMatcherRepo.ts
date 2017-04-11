@@ -2,6 +2,7 @@ import StubbedActionMatcher from "./StubbedActionMatcher";
 import ArgumentInvocation from "./ArgumentInvocation";
 import LookupResult from "./LookupResult";
 import WhyNoReturnValueMatched from "./WhyNoReturnValueMatched";
+import {StubbedAction} from "./StubbedActionMatcher";
 
 export class StubbedActionMatcherRepo {
     private stubbedActionMatcherMap: Record<string, StubbedActionMatcher[]> = {};
@@ -25,7 +26,16 @@ export class StubbedActionMatcherRepo {
         }
     }
 
-    setStubbedActionMatcher(propertyKey: PropertyKey, stubbedActionMatcher: StubbedActionMatcher) {
+    setStubbedActionForArgs(propertyKey: PropertyKey, argumentInvocation: ArgumentInvocation, stubbedAction: StubbedAction) {
+        this.deleteCallRecord(propertyKey, argumentInvocation);
+        this.setStubbedActionMatcher(propertyKey, StubbedActionMatcher.forArgs(argumentInvocation, stubbedAction));
+    }
+
+    setStubbedActionForAnyArgs(propertyKey: PropertyKey, stubbedAction: StubbedAction) {
+        this.setStubbedActionMatcher(propertyKey, StubbedActionMatcher.anyArgs(stubbedAction));
+    }
+
+    private setStubbedActionMatcher(propertyKey: PropertyKey, stubbedActionMatcher: StubbedActionMatcher) {
         if (!this.stubbedActionMatcherMap[propertyKey])
             this.stubbedActionMatcherMap[propertyKey] = [];
 
@@ -45,5 +55,12 @@ export class StubbedActionMatcherRepo {
     resetPropertyKey(propertyKey: PropertyKey) {
         this.stubbedActionMatcherMap[propertyKey] = [];
         this.callMap[propertyKey] = [];
+    }
+
+    private deleteCallRecord(propertyKey: PropertyKey, argumentInvocation: ArgumentInvocation) {
+        this.callMap[propertyKey] = (this.callMap[propertyKey] || []);
+
+        this.callMap[propertyKey] = this.callMap[propertyKey].filter((call) => !call.equivalentTo(argumentInvocation))
+
     }
 }
