@@ -2,7 +2,7 @@ import WhyReturnValueDidntMatch from "./WhyNoReturnValueMatched";
 import _setStubbedActionNoArgs from "./_setStubbedActionNoArgsSymbol";
 import {
     ReturnValueAction, ThrowingAction, RejectedPromiseAction, StubbedAction,
-    ResolvedPromiseAction
+    ResolvedPromiseAction, VoidResolvedPromiseAction
 } from "./StubbedActionMatcher";
 import {PromiseReturnSetter, When} from "../index";
 
@@ -26,6 +26,10 @@ class SafeMockReturnSetter<T> implements PromiseReturnSetter<T> {
 
     resolve(resolvedValue: any): void {
         this.stubbedActionSetter(ResolvedPromiseAction.of(resolvedValue));
+    }
+
+    resolveVoid(): void {
+        this.stubbedActionSetter(VoidResolvedPromiseAction.of());
     }
 
     reject(rejection: any): void {

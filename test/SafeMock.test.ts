@@ -264,6 +264,23 @@ describe('SafeMock', () => {
                         }
                     )
             });
+
+            it("allows setting promise resolved with a void directly", () => {
+                interface PromiseSomeService {
+                    someMethodThatReturnsAPromise(): Promise<void>;
+                }
+
+                const mock: Mock<PromiseSomeService> = SafeMock.build<PromiseSomeService>();
+
+                when(mock.someMethodThatReturnsAPromise()).resolveVoid();
+
+                return mock.someMethodThatReturnsAPromise()
+                    .then(
+                        (resolvedValue) => {
+                            expect(resolvedValue).to.be.undefined
+                        }
+                    )
+            });
         });
 
         describe("No Return Value Set", () => {

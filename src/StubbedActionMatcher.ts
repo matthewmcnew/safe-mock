@@ -66,6 +66,17 @@ export class ResolvedPromiseAction implements StubbedAction {
     }
 }
 
+export class VoidResolvedPromiseAction implements StubbedAction {
+
+    performMockedReturnValue(): any {
+        return Promise.resolve();
+    }
+
+
+    static of() {
+        return new VoidResolvedPromiseAction();
+    }
+}
 
 export interface StubbedAction {
     performMockedReturnValue(): any
