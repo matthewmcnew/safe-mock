@@ -13,7 +13,7 @@ export const verifyInTests: verifier = (mockToVerify: any): any => {
 
 const callableMock = Symbol('CallableMock');
 
-export class ProxyMock<T> implements ProxyHandler<T> {
+export class ProxyMock<T extends object> implements ProxyHandler<T> {
 
     private stubbedActionMatcherRepo: StubbedActionMatcherRepo = new StubbedActionMatcherRepo();
 
