@@ -239,12 +239,13 @@ describe('SafeMock', () => {
 
                 const mock: Mock<PromiseSomeService> = SafeMock.build<PromiseSomeService>();
 
-                when(mock.someMethodThatReturnsAPromise()).reject(new Error("Ah Geez!"));
+                const expectedError = new Error("Ah Geez!");
+                when(mock.someMethodThatReturnsAPromise()).reject(expectedError);
 
                 return mock.someMethodThatReturnsAPromise()
                     .then(
                         () => expect.fail('Promise Should not resolve'),
-                        (err) => expect(err).to.eql(new Error("Ah Geez!")),
+                        (err) => expect(err).to.eql(expectedError),
                     )
             });
 
