@@ -7,9 +7,11 @@ import {StubbedActionMatcherRepo} from "./StubbedActionMatcherRepo";
 import {verifier} from "../index";
 import setStubbedActionNoArgsMatcher from "./_setStubbedActionNoArgsSymbol";
 
-export const verifyInTests: verifier = (mockToVerify: any): any => {
+const verifier = ((mockToVerify: any): any => {
     return mockToVerify.verifier;
-};
+}) as any;
+verifier.unsafe = verifier;
+export const verifyInTests: verifier = verifier;
 
 const callableMock = Symbol('CallableMock');
 

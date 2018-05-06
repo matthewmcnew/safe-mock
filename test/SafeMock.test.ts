@@ -4,6 +4,7 @@ import {Mock, MockFunction} from "../index";
 
 interface SomeService {
     createSomethingNoArgs(): string;
+    createSomethingOptionalArgs(optional?: string): string;
     createSomethingOneArg(one: string): string;
     createSomethingMultipleArgs(one: string, two: string, three: string): number;
     matchesComplexArgs(thing: Complex): string;
@@ -382,6 +383,26 @@ describe('SafeMock', () => {
                 mock.createSomethingNoArgs();
 
                 verify(mock.createSomethingNoArgs).called()
+            });
+        });
+
+        describe('optional argument methods', () => {
+            it("throws an exception if Not Called with expected args", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                mock.createSomethingOptionalArgs();
+
+                expect(() => {
+                    verify.unsafe(mock.createSomethingOptionalArgs).calledWith("helllo")
+                }).to.throw('createSomethingOptionalArgs was not called with: (\"helllo\")');
+            });
+
+            it("does not throw an exception if it was Called", () => {
+                const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+                mock.createSomethingOptionalArgs("optionalArg");
+
+                verify(mock.createSomethingOptionalArgs).calledWith("optionalArg")
             });
         });
 

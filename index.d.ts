@@ -16,9 +16,19 @@ export interface PromiseReturnSetter<T> extends ReturnSetter<Promise<T>> {
     reject(rejection: any): void;
 }
 
-export declare interface verifier {
-    <T>(thing: SafeMockThing<() => T>): CallVerifierNoArgs;
+export declare interface verifierUnsafe {
     <T, K>(thing: SafeMockThing<(k: K) => T>): CallVerifier1<K>;
+    // <T>(thing: SafeMockThing<() => T>): CallVerifierNoArgs;
+}
+
+export declare interface unsafeVerifier {
+    (thing: SafeMockThing<any>): CallVerifierUnsafe;
+}
+
+export declare interface verifier {
+    unsafe: unsafeVerifier;
+    <T, K>(thing: SafeMockThing<(k: K) => T>): CallVerifier1<K>;
+    <T>(thing: SafeMockThing<() => T>): CallVerifierNoArgs;
     <T, K, L>(thing: SafeMockThing<(k: K, l: L) => T>): CallVerifier2<K, L>;
     <T, K, L, J>(thing: SafeMockThing<(k: K, l: L, j: J) => T>): CallVerifier3<K, L, J>;
     <T, K, L, J, A>(thing: SafeMockThing<(k: K, l: L, j: J, a: A) => T>): CallVerifier4<K, L, J, A>;
@@ -85,6 +95,12 @@ export interface CallVerifier10<K, L, J, A, B, C, D, E, F, X> {
     never: CallVerifier10<K, L, J, A, B, C, D, E, F, X>;
 }
 
+export interface CallVerifierUnsafe {
+    called(): void;
+    calledWith(...args: any[]): void;
+    never: CallVerifierUnsafe;
+}
+
 export declare type SafeMockThing<T> = T & Mocked;
 export declare type MockFunction<T extends Function> = T & Mocked;
 
@@ -113,5 +129,6 @@ export declare interface SafeMockConstructor {
 
 export declare const when: When;
 export declare const verify: verifier;
+export declare const verifyUnsafe: verifierUnsafe;
 export declare const SafeMock: SafeMockConstructor;
 export default SafeMock;

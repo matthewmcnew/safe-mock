@@ -202,6 +202,23 @@ verify(mock.someMethod).never.called();
 verify(mock.someMethod).never.calledWith(123);
 ```
 
+##### Working with optional parameters
+```typescript
+import SafeMock, {verify} from "safe-mock";
+
+interface SomeService {
+    someMethod(argument?: number, otherArg?: string): string;
+}
+const mock = SafeMock.build<SomeService>();
+
+//use verify.unsafe when working with optional parameters
+//unfortunately, type safety is lost when using 'verify.unsafe'  
+verify.unsafe(mock.someMethod).calledWith(123, "someArg");
+verify.unsafe(mock.someMethod).calledWith(123);
+verify.unsafe(mock.someMethod).called();
+
+```
+
 ### Reset-ing mocks
 
 ##### Use resetMock() to reset call information and mocked behavior
