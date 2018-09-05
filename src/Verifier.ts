@@ -18,6 +18,14 @@ export class Verifier {
             throw new Error(`${this.propertyKey} was never called`)
     }
 
+    calledTimes(count: number) {
+        const calls = this.repo.lookupCalls(this.propertyKey);
+
+        if (calls.length !== count)
+            throw new Error(`${this.propertyKey} was was expected to be called ${count} times, but was called ${calls.length}`)
+    }
+
+
     //noinspection JSUnusedGlobalSymbols
     calledWith(...expectedArgs: any[]) {
         const expectedArgumentInvocation = new ArgumentInvocation(expectedArgs);
