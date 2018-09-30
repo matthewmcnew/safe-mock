@@ -664,12 +664,10 @@ describe('SafeMock', () => {
                     verify(mock.createSomethingNoArgs).never.called()
                 }).to.throw("createSomethingNoArgs was called 2 times");
             });
-
             it('never.called() does not throw exception if no interaction occurred', () => {
                 const mock: Mock<SomeService> = SafeMock.build<SomeService>();
                 verify(mock.createSomethingNoArgs).never.called()
             });
-
             it('never.calledWith() exception if interaction occurred', () => {
                 const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
@@ -680,8 +678,6 @@ describe('SafeMock', () => {
                     verify(mock.createSomethingOneArg).never.calledWith("call")
                 }).to.throw(`createSomethingOneArg was called 2 times with ("call")`);
             });
-
-
             it('never.calledWith() does not throw exception if no matching interaction occurred', () => {
                 const mock: Mock<SomeService> = SafeMock.build<SomeService>();
 
@@ -690,6 +686,43 @@ describe('SafeMock', () => {
                 verify(mock.createSomethingOneArg).never.calledWith("call");
             });
         })
+    });
+
+    describe('verifying times called', () => {
+        it('times.called(1) exception if interaction occurred twice', () => {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            mock.createSomethingNoArgs();
+            mock.createSomethingNoArgs();
+
+            expect(() => {
+                verify(mock.createSomethingNoArgs).times(1).called("call")
+            }).to.throw("createSomethingNoArgs was was expected to be called 1 times, but was called 2");
+        });
+        it("does not throw exception if called once", () => {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            mock.createSomethingOneArg("ExpectedArg!");
+
+            verify(mock.createSomethingOneArg).times(1).calledWith("ExpectedArg!");
+        });
+        it("does not throw exception if called twice", () => {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            mock.createSomethingOneArg("ExpectedArg!");
+            mock.createSomethingOneArg("ExpectedArg!");
+
+            verify(mock.createSomethingOneArg).times(2).calledWith("ExpectedArg!");
+        });
+        it("does not throw exception if called three times", () => {
+            const mock: Mock<SomeService> = SafeMock.build<SomeService>();
+
+            mock.createSomethingOneArg("ExpectedArg!");
+            mock.createSomethingOneArg("ExpectedArg!");
+            mock.createSomethingOneArg("ExpectedArg!");
+
+            verify(mock.createSomethingOneArg).times(3).calledWith("ExpectedArg!");
+        });
     });
 
     describe('building safe mock', () => {

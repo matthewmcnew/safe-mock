@@ -186,6 +186,14 @@ verify(mock.someMethod).calledWith(123, "someArg");
 verify(mock.someMethod).called();
 ```
 
+//use verify.times(argument: number).called() to check that a mock was called a specified number of times
+verify(mock.someMethod).times(2).called();
+```
+
+//use verify.times(argument: number).calledWith to check mocked method was called a specified number of times with
+//the exact arguments
+verify(mock.someMethod).times(4).calledWith(123, "someArg");
+
 ##### Verify that mocks were never called
 ```typescript
 import SafeMock, {verify} from "safe-mock";
@@ -249,7 +257,7 @@ function someFunction() {
 
 const mockFunction = SafeMock.mockFunction(someFunction);
 
-when(mockFunction).return("return vlause");
+when(mockFunction).return("return values");
 verify(mockFunction).called()
 someOtherMethod.resetMock();
 ```
