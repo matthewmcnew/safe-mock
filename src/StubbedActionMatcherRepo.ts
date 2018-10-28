@@ -10,7 +10,7 @@ export class StubbedActionMatcherRepo {
 
     recordAndFindMatch(propertyKey: PropertyKey, argsToMatch: ArgumentInvocation): LookupResult {
         this.recordCall(propertyKey, argsToMatch);
-        const stubbedActionMatchers = this.stubbedActionMatcherMap[propertyKey] || [];
+        const stubbedActionMatchers = this.stubbedActionMatcherMap[String(propertyKey)] || [];
 
         const [lastMatchedMatcher] =
             stubbedActionMatchers
@@ -36,31 +36,31 @@ export class StubbedActionMatcherRepo {
     }
 
     private setStubbedActionMatcher(propertyKey: PropertyKey, stubbedActionMatcher: StubbedActionMatcher) {
-        if (!this.stubbedActionMatcherMap[propertyKey])
-            this.stubbedActionMatcherMap[propertyKey] = [];
+        if (!this.stubbedActionMatcherMap[String(propertyKey)])
+            this.stubbedActionMatcherMap[String(propertyKey)] = [];
 
-        this.stubbedActionMatcherMap[propertyKey].push(stubbedActionMatcher);
+        this.stubbedActionMatcherMap[String(propertyKey)].push(stubbedActionMatcher);
     }
 
     lookupCalls(propertyKey: PropertyKey): ArgumentInvocation[] {
-        return this.callMap[propertyKey] || [];
+        return this.callMap[String(propertyKey)] || [];
     }
 
     private recordCall(propertyKey: PropertyKey, argsToMatch: ArgumentInvocation) {
-        this.callMap[propertyKey] = (this.callMap[propertyKey] || []);
+        this.callMap[String(propertyKey)] = (this.callMap[String(propertyKey)] || []);
 
-        this.callMap[propertyKey].push(argsToMatch)
+        this.callMap[String(propertyKey)].push(argsToMatch)
     }
 
     resetPropertyKey(propertyKey: PropertyKey) {
-        this.stubbedActionMatcherMap[propertyKey] = [];
-        this.callMap[propertyKey] = [];
+        this.stubbedActionMatcherMap[String(propertyKey)] = [];
+        this.callMap[String(propertyKey)] = [];
     }
 
     private deleteCallRecord(propertyKey: PropertyKey, argumentInvocation: ArgumentInvocation) {
-        this.callMap[propertyKey] = (this.callMap[propertyKey] || []);
+        this.callMap[String(propertyKey)] = (this.callMap[String(propertyKey)] || []);
 
-        this.callMap[propertyKey] = this.callMap[propertyKey].filter((call) => !call.equivalentTo(argumentInvocation))
+        this.callMap[String(propertyKey)] = this.callMap[String(propertyKey)].filter((call) => !call.equivalentTo(argumentInvocation))
 
     }
 }
