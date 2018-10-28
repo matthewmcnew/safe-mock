@@ -3,6 +3,7 @@
     "lib": [
       "es6"
     ],
+    "outDir": "build",
     "module": "commonjs",
     "target": "es5",
     "noImplicitAny": true,
@@ -11,6 +12,8 @@
     "noImplicitReturns": true,
     "sourceMap": true,
     "inlineSources": true,
-    "declaration": false
+    "declaration": false,
+    "alwaysStrict": true,
+    "suppressImplicitAnyIndexErrors": true
   }
 }
