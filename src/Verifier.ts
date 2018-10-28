@@ -19,7 +19,7 @@ export class Verifier {
         const calls = this.repo.lookupCalls(this.propertyKey);
 
         if (calls.length === 0)
-            throw new Error(`${this.propertyKey} was never called`)
+            throw new Error(`${String(this.propertyKey)} was never called`)
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -49,7 +49,7 @@ class NeverVerifier {
         const calls = this.repo.lookupCalls(this.propertyKey);
 
         if (calls.length !== 0)
-            throw new Error(`${this.propertyKey} was called ${calls.length} times`)
+            throw new Error(`${String(this.propertyKey)} was called ${calls.length} times`)
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -62,7 +62,7 @@ class NeverVerifier {
             .filter(expectedCall => expectedArgumentInvocation.equivalentTo(expectedCall));
 
         if (callsWithMatchingArgs.length !== 0) {
-            throw new Error(`${this.propertyKey} was called ${callsWithMatchingArgs.length} times with ${expectedArgumentInvocation.prettyPrint()}`);
+            throw new Error(`${String(this.propertyKey)} was called ${callsWithMatchingArgs.length} times with ${expectedArgumentInvocation.prettyPrint()}`);
         }
     }
 
@@ -80,7 +80,7 @@ class TimesVerifier {
         const calls = this.repo.lookupCalls(this.propertyKey);
 
         if (calls.length !== this.count)
-            throw new Error(`${this.propertyKey} was was expected to be called ${this.count} times, but was called ${calls.length}`)
+            throw new Error(`${String(this.propertyKey)} was was expected to be called ${this.count} times, but was called ${calls.length}`)
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -93,7 +93,7 @@ class TimesVerifier {
             .filter(expectedCall => expectedArgumentInvocation.equivalentTo(expectedCall));
 
         if (callsWithMatchingArgs.length !== this.count) {
-            throw new Error(`${this.propertyKey} was called ${callsWithMatchingArgs.length} times with ${expectedArgumentInvocation.prettyPrint()} but was expected to be called ${this.count} times.`);
+            throw new Error(`${String(this.propertyKey)} was called ${callsWithMatchingArgs.length} times with ${expectedArgumentInvocation.prettyPrint()} but was expected to be called ${this.count} times.`);
         }
     }
 }
