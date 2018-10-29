@@ -439,6 +439,40 @@ describe('SafeMock', () => {
 
         describe('Multiple argument methods', () => {
 
+            describe('not known', () => {
+                type attributeList = 'foo' | 'bar' | 'foobar';
+                type attributeUpdate<K extends attributeList> = {
+                    [P in K]: string;
+                }
+
+                const testedTarget = {
+                    foo: 'fooVal',
+                    bar: 'barVal',
+        
+                }
+
+                interface AlienService {
+                    updateAlienAttribute<K extends attributeList>(attributes: attributeUpdate<K>): void
+                }
+
+                const mock: Mock<AlienService> = SafeMock.build<AlienService>();
+                mock.updateAlienAttribute(testedTarget);
+                verify(mock.updateAlienAttribute).calledWith(testedTarget);
+
+
+
+
+                interface O {
+                    foo?: string;
+                }
+                
+                function fails<K extends keyof O>(o: O, k: K) {
+                    var s: string = o[k]; // Previously allowed, now an error
+                                          // string | undefined is not assignable to a string
+                }
+
+
+            });
             describe('1 argument methods', () => {
                 it("throws an exception if called with different arguments", () => {
                     const mock: Mock<SomeService> = SafeMock.build<SomeService>();
@@ -686,6 +720,7 @@ describe('SafeMock', () => {
                 verify(mock.createSomethingOneArg).never.calledWith("call");
             });
         })
+
     });
 
     describe('verifying times called', () => {
