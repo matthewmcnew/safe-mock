@@ -47,61 +47,61 @@ export interface CallVerifierNoArgs {
 }
 export interface CallVerifier1<K> {
     called(): void;
-    calledWith(k: K): void;
+    calledWith(k: Partial<K>): void;
     times(k: number): any;
     never: CallVerifier1<K>;
 }
 export interface CallVerifier2<K, L> {
     called(): void;
-    calledWith(k: K, l: L): void;
+    calledWith(k: Partial<K>, l: Partial<L>): void;
     never: CallVerifier2<K, L>;
     times(k: number): any;
 }
 export interface CallVerifier3<K, L, J> {
     called(): void;
-    calledWith(k: K, l: L, j: J): void;
+    calledWith(k: Partial<K>, l: Partial<L>, j: Partial<J>): void;
     never: CallVerifier3<K, L, J>;
     times(k: number): any;
 }
 export interface CallVerifier4<K, L, J, A> {
     called(): void;
-    calledWith(k: K, l: L, j: J, a: A): void;
+    calledWith(k: Partial<K>, l: Partial<L>, j: Partial<J>, a: Partial<A>): void;
     never: CallVerifier4<K, L, J, A>;
     times(k: number): any;
 }
 export interface CallVerifier5<K, L, J, A, B> {
     called(): void;
-    calledWith(k: K, l: L, j: J, a: A, b: B): void;
+    calledWith(k: Partial<K>, l: Partial<L>, j: Partial<J>, a: Partial<A>, b: Partial<B>): void;
     times(k: number): any;
     never: CallVerifier5<K, L, J, A, B>;
 }
 export interface CallVerifier6<K, L, J, A, B, C> {
     called(): void;
-    calledWith(k: K, l: L, j: J, a: A, b: B, c: C): void;
+    calledWith(k: Partial<K>, l: Partial<L>, j: Partial<J>, a: Partial<A>, b: Partial<B>, c: Partial<C>): void;
     times(k: number): any;
     never: CallVerifier6<K, L, J, A, B, C>;
 }
 export interface CallVerifier7<K, L, J, A, B, C, D> {
     called(): void;
-    calledWith(k: K, l: L, j: J, a: A, b: B, c: C, d: D): void;
+    calledWith(k: Partial<K>, l: Partial<L>, j: Partial<J>, a: Partial<A>, b: Partial<B>, c: Partial<C>, d: Partial<D>): void;
     times(k: number): any;
     never: CallVerifier7<K, L, J, A, B, C, D>;
 }
 export interface CallVerifier8<K, L, J, A, B, C, D, E> {
     called(): void;
-    calledWith(k: K, l: L, j: J, a: A, b: B, c: C, d: D, e: E): void;
+    calledWith(k: Partial<K>, l: Partial<L>, j: Partial<J>, a: Partial<A>, b: Partial<B>, c: Partial<C>, d: Partial<D>, e: Partial<E>): void;
     times(k: number): any;
     never: CallVerifier8<K, L, J, A, B, C, D, E>;
 }
 export interface CallVerifier9<K, L, J, A, B, C, D, E, F> {
     called(): void;
-    calledWith(k: K, l: L, j: J, a: A, b: B, c: C, d: D, e: E, f: F): void;
+    calledWith(k: Partial<K>, l: Partial<L>, j: Partial<J>, a: Partial<A>, b: Partial<B>, c: Partial<C>, d: Partial<D>, e: Partial<E>, f: Partial<F>): void;
     times(k: number): any;
     never: CallVerifier9<K, L, J, A, B, C, D, E, F>;
 }
 export interface CallVerifier10<K, L, J, A, B, C, D, E, F, X> {
     called(): void;
-    calledWith(k: K, l: L, j: J, a: A, b: B, c: C, d: D, e: E, f: F, x: X): void;
+    calledWith(k: Partial<K>, l: Partial<L>, j: Partial<J>, a: Partial<A>, b: Partial<B>, c: Partial<C>, d: Partial<D>, e: Partial<E>, f: Partial<F>, x: Partial<X>): void;
     times(k: number): any;
     never: CallVerifier10<K, L, J, A, B, C, D, E, F, X>;
 }
