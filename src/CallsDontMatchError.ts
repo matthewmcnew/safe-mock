@@ -14,7 +14,8 @@ export default class CallsDontMatchError extends Error {
 
     constructor(expectedCall: ArgumentInvocation, otherInteractions: ArgumentInvocation[], methodName: PropertyKey) {
         super();
-        let message = `${methodName} was not called with: ${expectedCall.prettyPrint()}\n`;
+
+        let message = `${String(methodName)} was not called with: ${expectedCall.prettyPrint()}\n`;
 
         if (otherInteractions.length !== 0) {
             message = message + `       Other interactions with this mock: [${ prettyPrintOtherInteractions(otherInteractions)}]`;

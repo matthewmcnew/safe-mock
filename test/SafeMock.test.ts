@@ -368,6 +368,30 @@ describe('SafeMock', () => {
     });
 
     describe('verifying calls', () => {
+
+        describe('calledWith argument', () => {
+            it('index siguature is subset of method argument', () => {
+                type attributeList = 'foo' | 'bar' | 'foobar';
+                type attributeUpdate<K extends attributeList> = {
+                    [P in K]: string;
+                }
+    
+                const testedTarget = {
+                    foo: 'fooVal',
+                    bar: 'barVal',
+                }
+    
+                interface alienService {
+                    updateAlienAttribute<K extends attributeList>(attributes: attributeUpdate<K>): void
+                }
+    
+                const mock: Mock<alienService> = SafeMock.build<alienService>();
+                mock.updateAlienAttribute(testedTarget);
+                // without partial put int he index.d.ts, following line does not compile
+                verify(mock.updateAlienAttribute).calledWith(testedTarget);
+            });
+        });
+
         describe('no argument methods', () => {
             it("throws an exception if Not Called", () => {
                 const mock: Mock<SomeService> = SafeMock.build<SomeService>();
@@ -686,6 +710,7 @@ describe('SafeMock', () => {
                 verify(mock.createSomethingOneArg).never.calledWith("call");
             });
         })
+
     });
 
     describe('verifying times called', () => {
