@@ -12,7 +12,7 @@ export interface ReturnSetter<T> {
 }
 
 export interface PromiseReturnSetter<T> extends ReturnSetter<Promise<T>> {
-    resolve(rejection: T): void;
+    resolve(resolution: T): void;
     reject(rejection: any): void;
 }
 
