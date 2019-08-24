@@ -8,7 +8,10 @@ function inBraces(joiner: (a: any[]) => string) {
 }
 
 function isSpecialObject(arg: any): boolean {
-    let constructorName = arg.constructor.name;
+    if (arg === undefined || arg === null) {
+        return false;
+    }
+    const constructorName = arg.constructor.name;
     const notFound = -1;
     return primitives.indexOf(constructorName) === notFound;
 }

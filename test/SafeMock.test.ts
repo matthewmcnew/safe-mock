@@ -435,6 +435,29 @@ describe('SafeMock', () => {
 
                 verify(mockedFunction).called()
             });
+
+            it('matches verify on undefined arguments', () => {
+                type explodingFn = (param: {} | undefined) => void;
+                const mockFn = SafeMock.mockFunction<explodingFn>('testFunction');
+
+                mockFn(undefined);
+
+                expect(() => {
+                    verify(mockFn).calledWith(5);
+                }).to.throw(`testFunction was not called with: (5)`);
+            });
+
+            it('matches verify on null arguments', () => {
+                type explodingFn = (param: {} | null) => void;
+                const mockFn = SafeMock.mockFunction<explodingFn>('testFunction');
+
+                mockFn(null);
+
+                expect(() => {
+                    verify(mockFn).calledWith(5);
+                }).to.throw(`testFunction was not called with: (5)
+       Other interactions with this mock: [(null)]`);
+            });
         });
 
         describe('Multiple argument methods', () => {
